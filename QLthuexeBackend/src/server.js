@@ -2,6 +2,7 @@ import express from "express";
 import configViewEngine from "./config/viewEngine.js";
 import routes from "./routers/web.js";
 import { sequelize } from "./models/index.js";
+import { addLoaiXes,addHangXes } from "./utils/initialize.js";
 import corsConfig from "./config/cors.conf.js";
 const app = express();
 
@@ -12,7 +13,8 @@ configViewEngine(app);
 corsConfig(app);
 routes(app);
 
-
+addLoaiXes();
+addHangXes();
 //sequelize routes
 sequelize.sync({ alter: true })
   .then(() => {

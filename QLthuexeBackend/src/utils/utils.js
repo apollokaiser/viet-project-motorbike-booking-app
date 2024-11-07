@@ -1,4 +1,5 @@
 import jwt from"jsonwebtoken";
+import { UUID } from "sequelize";
 const secretKey = "myapp";
 const secretRefreshToken = "myappsecret";
 
@@ -46,8 +47,12 @@ class Utils {
         });
         return decoded_data;
     }
-    
-    
+
+    static createMaXe(loaiXe) {
+        const date  = new Date().getSeconds();
+        return loaiXe + date;
+    }
+
 }
 
 export default Utils;

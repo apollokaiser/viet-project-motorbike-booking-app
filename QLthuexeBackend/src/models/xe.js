@@ -27,9 +27,6 @@ const Xe = sequelize.define(
         xe_ton_khoi: {
             type: Sequelize.INTEGER,
         },
-        hinh_anh: {
-            type: Sequelize.STRING(100),
-        },
         ma_loai:{
             type: Sequelize.STRING(15),
             references: {
