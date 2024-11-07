@@ -5,15 +5,19 @@ const secretRefreshToken = "myappsecret";
 class Utils {
     static createJWT(user) {
         return jwt.sign({
-            //chua có
+            ...user
         },
             secretKey,
             { expiresIn: '1h' });
     }
-
+    /**
+     * 
+     * @param {object} user 
+     * @returns {string} 
+     */
     static createRefreshToken(user) {
         return jwt.sign({
-            //chua có
+            ...user
         },
             secretRefreshToken,
             { expiresIn: '7d' });

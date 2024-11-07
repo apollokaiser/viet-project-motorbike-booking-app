@@ -1,8 +1,8 @@
 
-import khachHang from "../models/models/khachhang.js";
-import Xe from "../models/models/xe.js";
+import khachHang from "../models/khachhang.js";
+import Xe from "../models/xe.js";
 import Utils from "../utils/utils.js";
-class khachHangservice {
+class KhachHangService {
     static async getALLKhachhang(req, res) {
         try {
             const kh = req.kh;
@@ -153,4 +153,4 @@ class khachHangservice {
         }
     }
 }
-export default khachHangservice;
+export default KhachHangService;
