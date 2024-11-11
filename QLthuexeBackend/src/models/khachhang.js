@@ -18,9 +18,12 @@ const khachHang = sequelize.define(
         },
         email: {
             type: Sequelize.STRING(255),
+            validate:{
+                isEmail:true
+            }
         },
         SDT: {
-            type: Sequelize.INTEGER,
+            type: Sequelize.STRING(20),
         }
     },
 );

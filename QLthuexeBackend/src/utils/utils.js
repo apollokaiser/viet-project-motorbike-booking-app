@@ -13,8 +13,7 @@ class Utils {
     }
     /**
      * 
-     * @param {object} user 
-     * @returns {string} 
+     * @param {object} user  
      */
     static createRefreshToken(user) {
         return jwt.sign({
@@ -47,12 +46,11 @@ class Utils {
         });
         return decoded_data;
     }
-
     static createMaXe(loaiXe) {
-        const date  = new Date().getSeconds();
+        if(!loaiXe) return null;
+        const date  = new Date().getTime() + Math.floor(Math.random() * 100);
         return loaiXe + date;
     }
-
 }
 
 export default Utils;

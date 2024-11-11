@@ -7,6 +7,8 @@ import {
   } from "react-router-dom";
 import Page from './layouts/Page.jsx';
 import Home from './layouts/Home.jsx';
+import AddBikes from './layouts/AddBikes.jsx';
+import ProductDetail from './layouts/ProductDetail.jsx';
 
   const router = createBrowserRouter([
     {
@@ -16,7 +18,15 @@ import Home from './layouts/Home.jsx';
             {
                 path:"",
                 element:<Home/>,
-                index:true
+                index:true,
+            },
+            {
+              path:'/add-bikes',
+              element:<AddBikes/>
+            },
+            {
+              path:'/chi-tiet-xe/:id',
+              element:<ProductDetail/>
             }
         ]
     }

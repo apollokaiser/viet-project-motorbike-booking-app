@@ -294,6 +294,7 @@
     justify-content: center;
     align-items: center;
     padding: 10px;
+    text-transform: uppercase;
   }
   .product-type-option ul {
     width: 200px;
@@ -330,7 +331,7 @@
   .product-item .product-info {
     width: 100%;
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
     flex-direction: column;
   }
@@ -1029,10 +1030,13 @@
     gap:30px;
   }
   .product-img{
-    width: 40%;
+    width: 30%;
+    height:350px;
     border: 1px solid #ccc;
     border-radius: 5px;
     padding: 5px;
+    object-fit: contain;
+    object-position: center ;
     overflow: hidden;
   }
   .product-content {
@@ -1160,6 +1164,10 @@
    .other-product-list {
     width: 100%;
    }
+   .product-image {
+    width: 100%;
+    height: 200px;
+   }
    .other-product-list .other-product-item {
     padding: 10px;
     margin-bottom: 10px;
@@ -1189,4 +1197,38 @@
   
   /*css for product detail*/
   
+  /*css for add bikes */
+  .add-bikes-table {
+    border-collapse: collapse;
+      font-family: Tahoma, Geneva, sans-serif;
+      width: 100%;
+      margin: 0 auto;
+  }
+  .add-bikes-table td {
+    padding: 15px;
+  }
+  .add-bikes-table thead td {
+    background-color: #54585d;
+    color: #ffffff;
+    font-weight: bold;
+    font-size: 13px;
+    border: 1px solid #54585d;
+  }
+  .add-bikes-table tbody td {
+    color: #636363;
+    border: 1px solid #dddfe1;
+  }
+  .add-bikes-table tbody tr {
+    background-color: #f9fafb;
+  }
+  .add-bikes-table tbody tr:nth-child(odd) {
+    background-color: #ffffff;
+  }
+  .add-bike-button {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-radius: 5px;
+    cursor: pointer;
+  }
     

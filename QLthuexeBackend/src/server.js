@@ -13,12 +13,12 @@ configViewEngine(app);
 corsConfig(app);
 routes(app);
 
-addLoaiXes();
-addHangXes();
 //sequelize routes
 sequelize.sync({ alter: true })
   .then(() => {
     console.log('Cơ sở dữ liệu đã được đồng bộ hóa');
+    addLoaiXes();
+  addHangXes();
   })
   .catch((err) => {
     console.error('Lỗi đồng bộ hóa cơ sở dữ liệu:', err);

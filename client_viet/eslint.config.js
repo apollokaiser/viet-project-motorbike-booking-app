@@ -37,6 +37,7 @@ export default [
       'react/no-unknown-property':'off',
       'react/prop-types':'off',
       'no-empty':'off',
+      'no-undef':'off',
     },
   },
 ]

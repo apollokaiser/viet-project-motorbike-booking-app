@@ -4,7 +4,7 @@ function VideoBanner() {
   return (
     <>
       <div className="fade-in support-banner">
-        <img src="./img/banner-ngang-5037.png" alt="" />
+        <img src={support_banner} alt="" />
       </div>
       <div className="fade-in iframe-video">
         <div className="main-title">Truyền thông nói gì ?</div>

@@ -6,25 +6,32 @@ const Xe = sequelize.define(
     'xe',
     {
         ma_xe: {
-            type: Sequelize.STRING(15),
+            type: Sequelize.STRING(20),
             primaryKey: true,
         },
+        ten_xe:{
+            type: Sequelize.STRING(200)
+        },
+        bien_so:{
+            type: Sequelize.STRING(15),
+        },
         tinh_trang_xe: {
-            type: Sequelize.STRING(30),
+            type: Sequelize.TINYINT(1),
         },
         phan_khoi: {
             type: Sequelize.STRING(30),
         },
         gia_thue: {
-            type: Sequelize.INTEGER,
+            type: Sequelize.DECIMAL(10,2),
         },
         mo_ta: {
             type: Sequelize.STRING(1000),
+            allowNull:true,
         },
         so_luong: {
             type: Sequelize.INTEGER,
         },
-        xe_ton_khoi: {
+        xe_ton_kho: {
             type: Sequelize.INTEGER,
         },
         ma_loai:{
