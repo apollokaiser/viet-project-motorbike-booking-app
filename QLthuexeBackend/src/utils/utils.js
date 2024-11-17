@@ -1,5 +1,4 @@
 import jwt from"jsonwebtoken";
-import { UUID } from "sequelize";
 const secretKey = "myapp";
 const secretRefreshToken = "myappsecret";
 
@@ -50,6 +49,20 @@ class Utils {
         if(!loaiXe) return null;
         const date  = new Date().getTime() + Math.floor(Math.random() * 100);
         return loaiXe + date;
+    }
+    static createMaThueXe(paymentMethod) {
+        if(!paymentMethod) return null;
+        const date  = new Date().getTime();
+        switch(paymentMethod) {
+            case 'ONLINE':
+                return 'ON' + date;
+            case 'OFFLINE':
+                return 'OF' + date;
+            case 'COD':
+                return 'CD' + date;
+            default:
+                return null;
+        }
     }
 }
 

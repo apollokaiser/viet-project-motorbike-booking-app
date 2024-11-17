@@ -49,3 +49,23 @@ export const addHangXes = async () => {
         console.log("Initialize - BRAND failed: " + error)
     }
 }
+
+
+export const orderStatus = {
+    PENDING:{
+        id:1,
+        name:'Đang chờ'
+    },
+    DELIVERED:{
+        id:2,
+        name:'Đã giao'
+    },
+    RETURNED:{
+        id:3,
+        name:'Đã trả'
+    },
+    CANCELLED:{
+        id:4,
+        name:'Đã hủy'
+    }
+}
