@@ -1,45 +1,39 @@
 import GoogleAuthButton from "@comps/GoogleAuthButton";
-
+import Link from "@comps/Link";
 function Navbar() {
     return (
         <>
             <nav className="navigation-bar">
                 <ul className="navbar">
                     <li className="nav-item">
-                        <a href="./index.html">Trang chủ</a>
+                        <Link to={"/"}>Trang chủ</Link>
                     </li>
                     <li className="nav-item">
-                        <a href="#">Giới thiệu</a>{" "}
+                        <Link  to={"/gioi-thieu"}>Giới thiệu</Link>{" "}
                     </li>
                     <li className="nav-item collapse">
-                        <a href="">Danh sách cho thuê xe</a>
+                        <Link to={"/danh-sach-xe"} params={{check:'all'}}>Danh sách cho thuê xe</Link>
                         <ul className="dropdown-menu">
                             {/*TODO: a bao bên ngoài li*/}
                             <li className="nav-item">
-                                <a href="#">Danh sách xe mới</a>
+                                <Link to={"/danh-sach-xe"} params={{check:'all', product:'newest'}}>Danh sách xe mới</Link>
                             </li>
                             <li className="nav-item">
-                                <a href="#">Danh sách xe bán chạy</a>
-                            </li>
-                            <li className="nav-item">
-                                <a href="#">Danh sách xe đang thuê</a>
-                            </li>
-                            <li className="nav-item">
-                                <a href="#">Danh sách xe đã bán</a>
+                                <Link to={"/danh-sach-xe"} params={{check:'all',order:'asc'}} >Danh sách xe bán chạy</Link>
                             </li>
                         </ul>
                     </li>
                     <li className="nav-item">
-                        <a href="">Chi nhánh</a>
+                        <Link to={'/chi-nhanh'}>Chi nhánh</Link>
                     </li>
                     <li className="nav-item">
-                        <a href="">Tuyển dụng</a>
+                        <Link to={'/tuyen-dung'} >Tuyển dụng</Link>
                     </li>
                     <li className="nav-item">
-                        <a href="">Tin tức</a>
+                        <Link to={'/tin-tuc'}>Tin tức</Link>
                     </li>
                     <li className="nav-item">
-                        <a href="">Liên hệ</a>
+                        <Link to={'/lien-he'}>Liên hệ</Link>
                     </li>
                     <li className="nav-item">
                         <GoogleAuthButton/>

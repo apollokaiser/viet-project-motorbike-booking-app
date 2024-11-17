@@ -6,7 +6,6 @@ export default function convertToVND(number) {
         }
         number = parseFloat(number);
         let vnd = number.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' });
-        console.log(vnd);
         return vnd;
     } catch (error) {
         return null;

@@ -1,14 +1,16 @@
-
 import relationship_image from "@/assets/img/product/avatar-honda-rsx-8999.jpg"
 import {useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { getXe } from "@/apis/getData";
 import convertToVND from "@/utils/convertVND";
+import RentPolicy from "@comps/product/RentPolicy";
+import RentalInfomation from "@comps/product/RentalInfomation";
+import {useDispatch } from 'react-redux'
+import { addCart } from "@/redux/cart/cartSplice";
 function ProductDetail() {
     const { id } = useParams();
-    console.log(id);
+    const dispatch = useDispatch()
     const [xe, setXe] = useState(null);
-    // http://stackoverflow.com/chi-tiet-xe/1234
     useEffect(()=>{
         getXe(id).then(result => {
             setXe(result.data)
@@ -18,10 +20,16 @@ function ProductDetail() {
         if(!xe?.hinhAnhs || xe.hinhAnhs.length ==0) {
           return "";
         }
-        return xe.hinhAnhs[0].url; // Return the first image URL if available, otherwise return an empty string.  This is just a placeholder, you may need to adjust this logic based on your specific requirements.  For example, you might want to return a default image or a placeholder image.  For a more complete solution, you might want to use a library like "react-image-gallery" or "react-responsive-carousel" to handle image loading
+        return xe.hinhAnhs[0].url; 
       }
       const getVND = () =>{
-        return convertToVND(xe?.gia_thue); // Convert the price to VND using the convertToVND function from the utils folder.  This is just a placeholder, you may need to adjust this logic based on your specific requirements.  For example, you might want to format the price to include commas or add currency symbols.  For a more complete solution, you might want to use a library like "react-currency-format" to handle currency formatting.  For example, you might want to format the price to include commas or add currency symbols.  For a more complete solution, you might want to use a library like "react-currency-format" to handle currency formatting.  For example, you might want to format the price to include commas or add currency symbols.  For a more complete solution, you might want to use a library like "react-currency-format" to handle currency formatting.  For example, you might want to format
+        return convertToVND(xe?.gia_thue);
+      }
+      const addCartItem = () =>{
+        dispatch(addCart({
+            id,
+            quantity: 1
+        }))
       }
     return ( <>
     <div className="fade-in main-content">
@@ -52,51 +60,13 @@ function ProductDetail() {
                         </div>
                     </div>
                     <div className="product-action">
-                        <button className="add-cart-btn">Thuê ngay</button>
+                        <button className="add-cart-btn" onClick={addCartItem}>Thuê ngay</button>
                         <button className="book-btn">Đặt xe trước</button>
                     </div>
-                    <div className="rent-policy">
-                        <p>▶️ Người dưới 18 tuổi không được phép thuê xe</p>
-                        <p>▶️ Khi thuê xe bạn được sẵn 2 mũ nếu yêu cầu (mặc định là 1)</p>
-                        <p>▶️ Bắt buộc phải cọc thế chân khi nhận xe, Cty hoàn đủ cọc khi trả xe (Có thể thương lượng trước)</p>
-                        <p>▶️ Giao xe tận nơi (8h-20h) trong sài gòn (Có phí) để nv đi grab về (Có thương lượng trước), sau khung giờ trên KH vui lòng đến thuê hoặc trả xe tại cty</p>
-                    </div>
+                    <RentPolicy />
                 </div>
                 <div className="rental-information">
-                    <div className="rental-main-content">
-                        <h3>Bảng Giá Thuê - ( Motorbike rental information )</h3>
-                        <table border="1" className="rental-data-table">
-                            <tbody><tr className="table-header">
-                                <td className="time-to-rent"><p>Thời Gian Thuê</p><p>(To rent - Time)</p></td>
-                                <td className="price-to-rent"><p>Giá Thuê</p><p>(Price to rent)</p></td>
-                                <td className="procedure-to-rent"><p>Thủ Tục</p><p>(Procedure to rent)</p></td>
-                                <td className="down-payment"><p>Tiền Thế Chân</p><p>(Down payment)</p></td>
-                            </tr>
-                            <tr>
-                                <td><p>Từ 1 - 2 ngày</p><p>(1 - 2 days)</p></td>
-                                <td>1.500.000đ</td>
-                                <td rowSpan={3}>
-                                    <p>Công ty sẽ giữ (bản chính) một trong những giấy tờ tùy thân có ảnh sau :</p>
-                                    <p><strong style={{ color: "blue" }}>CMND , GPLX , hộ chiếu </strong></p>
-                                    <p>(Personal Certificate)</p>
-                                    <p><strong style={{ color: "blue" }}>Passport </strong></p>
-                                </td>
-                                <td rowSpan={3}>
-                                    <p><strong style={{ color: "blue" }}>Từ 3 Triệu (Bắt buộc) để nhận xe</strong></p>
-                                    <p>Hoàn trả tiền thế chân sau khi kết thúc hợp đồng thuê</p>
-                                    <p><strong style={{ color: "blue" }}>To 3.000.000 VND (commitment to refund) </strong></p>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><p>Từ 3 - 25 ngày</p><p>(3 - 25 days)</p></td>
-                                <td>1.500.000đ</td>
-                            </tr>
-                            <tr>
-                                <td><p>Trọn 1 tháng</p><p>(Full Month)</p></td>
-                                <td>1.500.000đ</td>
-                            </tr>
-                        </tbody></table>
-                    </div>
+                    <RentalInfomation/>
                     <div className="other-product">
                         <h3>Có Thể Bạn Sẽ Thích</h3>
                         <div className="other-product-list">

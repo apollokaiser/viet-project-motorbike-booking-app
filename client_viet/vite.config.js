@@ -12,5 +12,5 @@ export default defineConfig({
       '@configs': '/src/configs',
       '@assets': '/src/assets',
     }
-  }
+  },
 })

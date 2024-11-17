@@ -18,7 +18,6 @@ async function uploadImages(image, uploadPreset=null){
     try {
         console.log("Uploading " + image.name);
         const response = await axios.post(url, formData)
-        console.log(response);
         return response.data.secure_url;
     } catch (error) {
         console.log("Failed to upload" + error.message);

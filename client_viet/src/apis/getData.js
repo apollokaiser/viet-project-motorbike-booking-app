@@ -22,10 +22,20 @@ export const getAllXe = async(loaiXe="XS") =>{
 export const getXe = async(ma_xe) =>{
     try {
         const response = await axios.get(`/xe/get-xe?id=${ma_xe}`);
-        console.log(response);
         return response.data;
     } catch (error) {
         console.error("getAllXe failed: " + error);
         return null;
+    }
+}
+export const getCartDetails = async(cartItems) =>{
+    if(cartItems.length ==0) return [];
+    try {
+        const cartItemIds = cartItems.map(item=> item.id);
+        const response = await axios.post("/gio-hang/get-cart", {carts:cartItemIds});
+        return response.data;
+    } catch (error) {
+        console.error("getAllXe failed: " + error);
+        return [];
     }
 }
