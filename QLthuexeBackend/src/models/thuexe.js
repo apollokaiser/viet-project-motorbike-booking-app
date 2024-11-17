@@ -10,32 +10,36 @@ const thueXe = sequelize.define(
         },
         ngay_dat: {
             type: Sequelize.DATE,
-
+            allowNull:false,
         },
         ngay_bat_dau_thue: {
             type: Sequelize.DATE,
+            allowNull:false,
         },
         ngay_tra: {
             type: Sequelize.DATE,
+            allowNull:false,
         },
         tong_tien: {
-            type: Sequelize.INTEGER,
+            type: Sequelize.DECIMAL(10,2),
+            allowNull:false,
         },
         tinh_trang_thue: {
-            type: Sequelize.STRING(100),
+            type: Sequelize.INTEGER,
+            allowNull:false,
         },
-        CMND: {
+        google_id: {
             type: Sequelize.STRING(15),
             references: {
                 model: khachHang,
-                key: 'CMND',
+                key: 'google_id',
             },
         },
      
     },
 );
 //thue xe 1-n
-khachHang.hasMany(thueXe,{foreignKey:'CMND'});
-thueXe.belongsTo(khachHang,{foreignKey:'CMND'});
+khachHang.hasMany(thueXe,{foreignKey:'google_id'});
+thueXe.belongsTo(khachHang,{foreignKey:'google_id'});
 
 export default thueXe;
