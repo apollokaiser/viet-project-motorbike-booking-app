@@ -39,3 +39,12 @@ export const getCartDetails = async(cartItems) =>{
         return [];
     }
 }
+export const getPhiVanChuyen = async() =>{
+    try {
+        const response = await axios.get("/van-chuyen");
+        console.log(response);
+        return response.data;
+    } catch (error) {
+        return [];
+    }
+}
