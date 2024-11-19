@@ -89,6 +89,9 @@
     height: 100vh;
     background-color: #f2f2f2;
   }
+  .hide {
+  display: none !important;
+  }
   .slogan-header {
     width: 100%;
     background-color: #f000b8;
@@ -200,6 +203,11 @@
     width: 1px;
     height: 24px;
   }
+  .nav-item:last-child {
+    display:flex;
+    justify-content: end;
+    flex-grow: initial !important;
+  }
   .nav-item {
     display: inline-block;
     position: relative;
@@ -235,7 +243,7 @@
     transition: 0.5s all ease-out;
   }
   .login-google-button {
-    width: 80%;
+    width: 100%;
     padding: 5px;
     background-color: #4285f4;
     color: white;
@@ -248,6 +256,7 @@
     transition: background-color 0.3s ease-in-out;
     display: flex;
     align-items: center;
+    gap:5px;
     justify-content: space-between;
   }
   .dropdown-menu {
@@ -257,6 +266,7 @@
     visibility: hidden;
     transform: translateY(-30%);
     margin-top: 15px;
+    padding: 0 10px 0 0;
     background-color: #f9f9f9;
     box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
     z-index: 99;
@@ -736,29 +746,29 @@
   
   /*uiverse.io for cart*/
   /* From Uiverse.io by cbolson */
-  .my-form {
+  .payment-form {
       --_clr-primary: #666;
       --_clr-hover: #f33195;
       --_clr-checked: #127acf;
       margin-bottom: 30px;
     }
-    .my-form > div {
+    .payment-form > div {
       --_clr-current: var(--_clr-primary);
     
       display: flex;
       align-items: center;
       gap: 0.5rem;
     }
-    .my-form > div + div {
+    .payment-form > div + div {
       margin-block-start: 0.5rem;
     }
-    .my-form label {
+    .payment-form label {
       cursor: pointer;
       color: var(--_clr-current);
       transition: color 150ms ease-in-out;
     }
     /* styled radio */
-    .my-form input[type="radio"] {
+    .payment-form input[type="radio"] {
       appearance: none;
       outline: none;
       width: 1.5rem;
@@ -773,7 +783,7 @@
       cursor: pointer;
       position: relative;
     }
-    .my-form input[type="radio"]::after {
+    .payment-form input[type="radio"]::after {
       content: "";
       position: absolute;
       inset: 0.25rem;
@@ -786,30 +796,30 @@
       border-radius: inherit;
     }
     
-    .my-form label:hover,
-    .my-form input[type="radio"]:focus-visible,
-    .my-form input[type="radio"]:focus-visible + label,
-    .my-form input[type="radio"]:hover,
-    .my-form input[type="radio"]:hover + label {
+    .payment-form label:hover,
+    .payment-form input[type="radio"]:focus-visible,
+    .payment-form input[type="radio"]:focus-visible + label,
+    .payment-form input[type="radio"]:hover,
+    .payment-form input[type="radio"]:hover + label {
       --_clr-current: var(--_clr-hover);
     }
-    .my-form input[type="radio"]:focus-visible::after,
-    .my-form input[type="radio"]:hover::after {
+    .payment-form input[type="radio"]:focus-visible::after,
+    .payment-form input[type="radio"]:hover::after {
       opacity: 0.5;
       scale: 1;
       background-color: var(--_clr-hover);
     }
     
-    .my-form input[type="radio"]:checked + label:not(:hover),
-    .my-form input[type="radio"]:checked:not(:hover) {
+    .payment-form input[type="radio"]:checked + label:not(:hover),
+    .payment-form input[type="radio"]:checked:not(:hover) {
       --_clr-current: var(--_clr-checked);
     }
-    .my-form input[type="radio"]:checked::after {
+    .payment-form input[type="radio"]:checked::after {
       opacity: 1;
       scale: 1;
     }
     /*custom*/
-    .my-form label {
+    .payment-form label {
       display: inline-block;
       width: 100%;
       background-color: #eee;
@@ -858,6 +868,9 @@
     
     .form label {
       position: relative;
+    }
+    .form .flex.date-time label {
+      position: absolute !important;
     }
     .form label .input {
       width: 100%;
@@ -1315,4 +1328,52 @@
     transform: translate(0);
     transition: all .3s;
   }
-    
+  /*css for account button*/
+  /* From Uiverse.io by Yaya12085 */ 
+.account-button{
+  max-width: 320px;
+  display: flex;
+  overflow: hidden;
+  position: relative;
+  padding: 0.875rem 72px 0.875rem 1.75rem;
+  background-color: #039be5;
+  background-image: linear-gradient(to top right, #039be5, #29b6f6);
+  color: #ffffff;
+  font-size: 15px;
+  white-space: nowrap;
+  line-height: 1.25rem;
+  font-weight: 700;
+  text-align: center;
+  text-transform: uppercase;
+  cursor: pointer;
+  vertical-align: middle;
+  align-items: center;
+  border-radius: 0.5rem;
+  gap: 0.75rem;
+  box-shadow:
+    0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  border: none;
+  transition: all 0.6s ease;
+}
+
+.account-button span {
+  background-color: rgb(3 155 229);
+  display: grid;
+  position: absolute;
+  right: 0;
+  place-items: center;
+  width: 3rem;
+  height: 100%;
+}
+
+.account-button span svg {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.account-button:hover {
+  box-shadow:
+    0 4px 30px rgba(4, 175, 255, 0.1),
+    0 2px 30px rgba(11, 158, 255, 0.06);
+}

@@ -1,50 +1,54 @@
-
 import { useGoogleLogin } from "@react-oauth/google";
 import axios from "@/configs/axios";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import GoogleLoginButton from "./GoogleLoginButton";
 import AccountInfoButton from "./AccountInfoButton";
 import decode from "@/configs/jwtDecoder";
+import { useSelector, useDispatch } from "react-redux";
+import { login } from "@/redux/auth/authSlice";
 
+const GoogleAuthButton = () => {
+  const dispatch = useDispatch();
+  const userInfo = useSelector((state) => state.auth.user);
+  const loginGoogle = useGoogleLogin({
+    onSuccess: async (response) => {
+      try {
+        const result = await axios.post(`/auth/login/google`, {
+          code: response.code,
+        });
+        const { user, jwt, refreshToken } = result.data.data;
+        localStorage.setItem("jwt", JSON.stringify(jwt));
+        localStorage.setItem("refreshToken", JSON.stringify(refreshToken));
+        dispatch(login(user));
+      } catch (error) {
+        console.error("Login failed:", error);
+      }
+    },
+    flow: "auth-code",
+  });
 
-
-const GoogleAuthButton =() =>{
-    const [user,setUser] = useState(null)
-    const login = useGoogleLogin({
-        onSuccess: async (response) =>{
-            console.log(response);
-            try {
-                const result = await axios.post(`/auth/login/google`,{
-                    code: response.code,
-                })
-                const {user,jwt,refreshToken} = result.data.data
-                localStorage.setItem('jwt', JSON.stringify(jwt))
-                localStorage.setItem('refreshToken', JSON.stringify(refreshToken))
-                setUser(user)
-            } catch (error) {
-                console.error('Login failed:', error);
-            }
-        },
-        flow: 'auth-code'
-    })
-
-    useEffect(() =>{
-        const jwtData = decode(localStorage.getItem('jwt'));
-        if(jwtData==999) {
-           //xử lý với refreshToken
-        } else if(jwtData) {
-            setUser({google_id:jwtData.google_id, ho_ten:jwtData.ho_ten})
-        }
-    },[]);
-    
-    return (
-        <div className="google-login-container">
-            {user ? 
-            <AccountInfoButton name={user.name}/> :
-            <GoogleLoginButton onClick={()=> login()}/>} 
-        </div>
-        
-    )
-}
+  useEffect(() => {
+    const jwtData = decode(localStorage.getItem("jwt"));
+    if (jwtData == 999) {
+      //xử lý với refreshToken
+    } else if (jwtData) {
+      dispatch(
+        login({
+          google_id: jwtData.google_id,
+          ho_ten: jwtData.ho_ten,
+          email: jwtData.email,
+        })
+      );
+    }
+  }, []);
+  return (
+    <div className="google-login-container">
+      {userInfo ? (
+        <AccountInfoButton name={userInfo.ho_ten} />
+      ) : (
+        <GoogleLoginButton onClick={() => loginGoogle()} />
+      )}
+    </div>
+  );
+};
 export default GoogleAuthButton;
-
