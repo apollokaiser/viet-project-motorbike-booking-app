@@ -5,7 +5,8 @@ const cart = createSlice({
     name: 'cart',
     initialState: {
         items: [],
-        total: 0
+        total: 0, // total is the total price of items (not include shipping charges)
+        transport_fee:{}
     },
     reducers: {
         addCart: (state, actions) => {
@@ -40,7 +41,10 @@ const cart = createSlice({
             if (index > -1) {
                     state.items[index].quantity = actions.payload.quantity;
         }
-    }
+    },
+        setTransportFee: (state, actions) => {
+            state.transport_fee = actions.payload;
+        }
     },
     extraReducers: builder => {
         builder.addMatcher(
@@ -54,5 +58,5 @@ const cart = createSlice({
         )
     }
 })
-export const { addCart, removeCart, reduceQuantity, addDetails, addQuantity } = cart.actions;
+export const { addCart, removeCart, reduceQuantity, addDetails, addQuantity,setTransportFee } = cart.actions;
 export default cart.reducer;
