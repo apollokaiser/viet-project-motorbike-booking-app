@@ -10,20 +10,19 @@ export async function loginWithGoogle(req,res,next) {
         return res.status(400).json({ message: 'No code provided' });
     }
     const result = await getUserInfo(code);
-    console.log(result);
     // call service to fimd or save data
     if(!result) {
         return res.status(400).json({ message: 'Error' });
     }
     const user = await findOrCreateUser(result);
-    const jwt = Utils.createJWT(user);
+    const jwt = Utils.createJWT(user[0].dataValues);
     const refreshToken = Utils.createRefreshToken(user);
     res.status(200).send({
         message: 'User authenticated successfully',
         data:{
             jwt,
             refreshToken,
-            user
+            user:user[0].dataValues
         }
     })
 }
