@@ -10,22 +10,28 @@ const khuyenMai = sequelize.define(
         },
         ten_khuyen_mai: {
             type: Sequelize.STRING(100),
-
+            allowNull:true
+        },
+        mo_ta:{
+            type:Sequelize.TEXT,
+            allowNull:true
         },
         so_tien: {
-            type: Sequelize.INTEGER,
+            type: Sequelize.DECIMAL(10,2),
+            allowNull:false
         },
         ngay_bat_dau: {
             type: Sequelize.DATE,
+            allowNull:false
         },
         ngay_ket_thuc: {
             type: Sequelize.DATE,
+            allowNull:true
         },
-        giam_toi_da: {
-            type: Sequelize.INTEGER,
-        },
+    },{
+        timestamps:false,
 
-    },
+    }
 );
 
 export default khuyenMai;

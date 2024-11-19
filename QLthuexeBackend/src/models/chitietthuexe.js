@@ -25,9 +25,13 @@ const ctThueXe = sequelize.define(
         },
         so_luong: {
             type: Sequelize.INTEGER,
+            validate:{
+                min:1
+            },
+            allowNull:false
         },
         gia_tien: {
-            type: Sequelize.INTEGER,
+            type: Sequelize.DECIMAL(10,2),
         },
 
     },

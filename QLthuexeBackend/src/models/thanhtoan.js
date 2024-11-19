@@ -10,19 +10,24 @@ const thanhToan = sequelize.define(
             primaryKey: true,
         },
         phuong_thuc_tt: {
-            type: Sequelize.STRING(100),
+            type: Sequelize.ENUM({
+                values:['ONLINE', 'OFFLINE']
+            }),
         },
         ngay_tt: {
             type: Sequelize.DATE,
+            allowNull:false
         },
         so_tien_tt: {
-            type: Sequelize.INTEGER,
+            type: Sequelize.DECIMAL(10,2),
+            allowNull:false
         },
         noi_dung_tt: {
             type: Sequelize.STRING(1000),
         },
         tien_the_chan: {
-            type: Sequelize.INTERGER,
+            type: Sequelize.DECIMAL(10,2),
+            allowNull:true
         },
         //FK_THUEXE_THANHTOAN
         ma_don_dat: {

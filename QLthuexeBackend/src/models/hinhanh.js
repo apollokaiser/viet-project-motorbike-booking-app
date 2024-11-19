@@ -8,6 +8,7 @@ const hinhAnh = sequelize.define('hinh_anh', {
     },
     url: {
         type: Sequelize.STRING(255),
+        allowNull:false,
         validate:{
             isUrl: true,
             msg: "URL is not valid"

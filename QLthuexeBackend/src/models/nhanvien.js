@@ -8,13 +8,24 @@ const nhanVien = sequelize.define(
             primaryKey: true,
         },
         ho_ten: {
-            type: Sequelize.STRING(50)
+            type: Sequelize.STRING(100),
+            allowNull:false
         },
         email: {
             type: Sequelize.STRING(30),
+            validate: {
+                isEmail: {msg:"Please enter a valid email address"}
+            },
+            allowNull:false
+
         },
         mat_khau: {
             type: Sequelize.STRING(30),
+            validate:{
+                min: 8,
+                max:25
+            },
+            allowNull:false
         }
     },
 );

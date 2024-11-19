@@ -6,5 +6,9 @@ const sequelize = new Sequelize('qlthuexe', 'root', '', {
     logging: false,
     
 });
+Sequelize.DATE.prototype._stringify = function _stringify(date, options) {
+    date = this._applyTimezone(date, options)
+    return date.format("DD/MM/YYYY")
+}
 
 export {Sequelize, sequelize };

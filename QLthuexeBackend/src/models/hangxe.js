@@ -11,6 +11,7 @@ const hangXe = sequelize.define(
         },
         ten_hang: {
             type: Sequelize.STRING(50),
+            allowNull:false
         },
     },
 );

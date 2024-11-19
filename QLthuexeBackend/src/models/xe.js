@@ -10,19 +10,25 @@ const Xe = sequelize.define(
             primaryKey: true,
         },
         ten_xe:{
-            type: Sequelize.STRING(200)
+            type: Sequelize.STRING(200),
+            allowNull:false,
         },
         bien_so:{
             type: Sequelize.STRING(15),
+            allowNull:false,
         },
         tinh_trang_xe: {
             type: Sequelize.TINYINT(1),
+            defaultValue: true,
         },
         phan_khoi: {
-            type: Sequelize.STRING(30),
+            type: Sequelize.INTEGER,
+            allowNull:false
+
         },
         gia_thue: {
             type: Sequelize.DECIMAL(10,2),
+            allowNull:false
         },
         mo_ta: {
             type: Sequelize.STRING(1000),
@@ -30,9 +36,17 @@ const Xe = sequelize.define(
         },
         so_luong: {
             type: Sequelize.INTEGER,
+            allowNull:false,
+            validate:{
+                min: 0
+            }
         },
         xe_ton_kho: {
             type: Sequelize.INTEGER,
+            allowNull:false,
+            validate:{
+                min: 0
+            }
         },
         ma_loai:{
             type: Sequelize.STRING(15),

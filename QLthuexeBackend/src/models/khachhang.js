@@ -5,6 +5,9 @@ const khachHang = sequelize.define(
     {
         CMND: {
             type: Sequelize.STRING(15),
+            validate:{
+                isNumeric:true,
+            }
         },
         google_id:{
             type: Sequelize.STRING(50),

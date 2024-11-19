@@ -10,27 +10,30 @@ const phiPhat = sequelize.define(
             type: Sequelize.STRING(15),
             primaryKey: true,
         },
+        ngay_tinh_phi: {
+            type: Sequelize.DATE,
+            allowNull:false,
+        },
+        ly_do_phat: {
+            type: Sequelize.STRING(15),
+        },
+        so_tien_phat: {
+            type: Sequelize.DECIMAL(10,2),
+            allowNull:false,
+        },
+        trang_thai_tt: {
+            type: Sequelize.TINYINT(1),
+            allowNull:false,
+        },
         ma_don_dat: {
             type: Sequelize.STRING(15),
             references: {
                 model: thueXe,
                 key: 'ma_don_dat',
             }
-
+        
         },
-        ngay_tinh_phi: {
-            type: Sequelize.DATE,
-        },
-        ly_do_phat: {
-            type: Sequelize.STRING(15),
-        },
-        so_tien_phat: {
-            type: Sequelize.INTEGER,
-        },
-        trang_thai_tt: {
-            type: Sequelize.BOOLEAN,
-        },
-
+        
     },
 );
 

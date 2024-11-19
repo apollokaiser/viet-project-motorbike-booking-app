@@ -1,5 +1,6 @@
 import { Sequelize, sequelize } from "./index.js"
 import khachHang from './khachhang.js';
+import vanChuyen from "./vanchuyen.js";
 
 const thueXe = sequelize.define(
     'thue_xe',
@@ -9,37 +10,67 @@ const thueXe = sequelize.define(
             primaryKey: true,
         },
         ngay_dat: {
-            type: Sequelize.DATE,
-            allowNull:false,
+            type: Sequelize.BIGINT(19),
+            allowNull: false,
         },
         ngay_bat_dau_thue: {
-            type: Sequelize.DATE,
-            allowNull:false,
+            type:Sequelize.BIGINT(19),
+            allowNull: false,
         },
         ngay_tra: {
-            type: Sequelize.DATE,
-            allowNull:false,
+            type:Sequelize.BIGINT(19),
+            allowNull: false,
+        },
+        ten_nguoi_nhan:{
+            type: Sequelize.STRING(100),
+        },
+        dia_chi_nhan:{
+            type: Sequelize.TEXT,
+        },
+        sdt:{
+            type: Sequelize.STRING(20),
+            allowNull: false,
+        },
+        yeu_cau:{
+            type: Sequelize.TEXT,
+            allowNull: true,
         },
         tong_tien: {
-            type: Sequelize.DECIMAL(10,2),
-            allowNull:false,
+            type: Sequelize.DECIMAL(10, 2),
+            allowNull: false,
+        },
+        phi_van_chuyen:{
+            type: Sequelize.DECIMAL(10, 2),
+            allowNull: false,
+        },
+        tong_thue: {
+            type: Sequelize.DECIMAL(10, 2),
+            allowNull: false,
         },
         tinh_trang_thue: {
             type: Sequelize.INTEGER,
-            allowNull:false,
+            allowNull: false,
         },
         google_id: {
-            type: Sequelize.STRING(15),
+            type: Sequelize.STRING(50),
             references: {
                 model: khachHang,
                 key: 'google_id',
             },
         },
-     
+        ma_phi: {
+            type: Sequelize.STRING(20),
+            references: {
+                model: vanChuyen,
+                key: "ma_phi",
+            },
+        },
+
     },
 );
 //thue xe 1-n
-khachHang.hasMany(thueXe,{foreignKey:'google_id'});
-thueXe.belongsTo(khachHang,{foreignKey:'google_id'});
-
+khachHang.hasMany(thueXe, { foreignKey: 'google_id' });
+thueXe.belongsTo(khachHang, { foreignKey: 'google_id' });
+vanChuyen.hasMany(thueXe, { foreignKey: 'ma_phi',as:"thueXe" });
+thueXe.belongsTo(vanChuyen, { foreignKey: 'ma_phi', as:'vanChuyen' });
 export default thueXe;
