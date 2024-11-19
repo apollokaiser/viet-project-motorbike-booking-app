@@ -2,7 +2,7 @@ import express from "express";
 import configViewEngine from "./config/viewEngine.js";
 import routes from "./routers/web.js";
 import { sequelize } from "./models/index.js";
-import { addLoaiXes,addHangXes } from "./utils/initialize.js";
+import * as initialize from "./utils/initialize.js";
 import corsConfig from "./config/cors.conf.js";
 const app = express();
 
@@ -13,12 +13,13 @@ configViewEngine(app);
 corsConfig(app);
 routes(app);
 
-//sequelize routes
+//sequelize
 sequelize.sync({ alter: true })
   .then(() => {
     console.log('Cơ sở dữ liệu đã được đồng bộ hóa');
-    addLoaiXes();
-  addHangXes();
+    initialize.addLoaiXes();
+    initialize.addHangXes();
+    initialize.addPhiVanChuyen();
   })
   .catch((err) => {
     console.error('Lỗi đồng bộ hóa cơ sở dữ liệu:', err);
@@ -27,5 +28,5 @@ sequelize.sync({ alter: true })
 
 const PORT = 8080;
 app.listen(PORT, () => {
-    console.log("chay duoc nha " + PORT)
+    console.log("Server is running in port:  " + PORT)
 })
