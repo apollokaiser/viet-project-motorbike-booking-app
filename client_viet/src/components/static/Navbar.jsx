@@ -1,4 +1,4 @@
-import GoogleAuthButton from "@comps/GoogleAuthButton";
+import GoogleAuthButton from "@comps/auth/GoogleAuthButton";
 import Link from "@comps/Link";
 function Navbar() {
     return (
