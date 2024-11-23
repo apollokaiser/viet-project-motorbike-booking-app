@@ -1,6 +1,7 @@
 import Xe from "../models/xe.js";
 import hinhAnh from "../models/hinhanh.js";
 import Utils from "../utils/utils.js"
+import { ResponseMessage, ResponseBody } from "./payload/ResponseMessage.js"
 class XeService {
     static async getALLXe(req, res) {
         try {
@@ -69,8 +70,8 @@ class XeService {
     static async addXe(req, res) {
         try {
             const { bikes } = req.body;
-            if(bikes.lenght >100) return res.status(200).send({
-                status:400,
+            if (bikes.length > 100) return res.status(200).send({
+                status: 400,
                 msg: 'Over 100 data once per request '
             });
             const bikesData = bikes.map(bike => {
@@ -114,7 +115,7 @@ class XeService {
     }
     static async searchXe(req, res) {
         try {
-            const {check} = req.query;
+            const { check } = req.query;
             const result = await Xe.findAll({
                 where: {
                     loai_xe: check.loai_xe,
@@ -136,6 +137,24 @@ class XeService {
                 message: 'error'
             });
 
+        }
+    }
+    static async getRelatedProducts(req, res) {
+        const { category, brand } = req.query;
+        try {
+            const result = await Xe.findAll({
+                where: {
+                    ma_loai: category,
+                    ma_hang: brand
+                },
+                limit: 3,
+                include: [{ model: hinhAnh, as: 'hinhAnhs', attributes: ["url"] }],
+                attributes: ["ma_xe", "ten_xe", "gia_thue"]
+            })
+            return res.status(200).send(new ResponseBody("Get related products successfully", result));
+        } catch (error) {
+            console.log(error);
+            return res.status(200).send(new ResponseMessage("error", 400));
         }
     }
 }
