@@ -27,14 +27,24 @@ const categoriesData = [
 ]
 const phiVanChuyenData = [
     {
-        ma_phi: "internal",
-        ma_quan: '778',
-        ma_tinh: '79',
+        from: 0,
+        to: 1,
         phi_van_chuyen: 0
     },
     {
-        ma_phi: "external",
-        phi_van_chuyen: 50000
+        from: 1,
+        to: 5,
+        phi_van_chuyen: 20000
+    }
+    ,{
+        from: 5,
+        to: 10,
+        phi_van_chuyen: 30000
+    },
+    {
+        from: 10,
+        to: 999,
+        phi_van_chuyen: 40000
     }
 ]
 
