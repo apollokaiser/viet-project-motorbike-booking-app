@@ -1,22 +1,24 @@
-import relationship_image from "@/assets/img/product/avatar-honda-rsx-8999.jpg";
-import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import { getXe } from "@/apis/getData";
-import convertToVND from "@/utils/convertVND";
-import RentPolicy from "@comps/product/RentPolicy";
-import RentalInfomation from "@comps/product/RentalInfomation";
+import { useLoaderData, useParams } from "react-router-dom";
 import { useDispatch } from "react-redux";
+
 import { addCart } from "@/redux/cart/cartSplice";
+import convertToVND from "@/utils/convertVND";
+
+import RentalInfomation from "@comps/product/RentalInfomation";
+import RelatedProduct from "@comps/product/RelatedProduct";
+import RentPolicy from "@comps/product/RentPolicy";
 import { toast } from "@/utils/Alert";
+
 function ProductDetail() {
-  const { id } = useParams();
+  const xe = useLoaderData();
   const dispatch = useDispatch();
-  const [xe, setXe] = useState(null);
-  useEffect(() => {
-    getXe(id).then((result) => {
-      setXe(result.data);
-    });
-  }, []);
+  const {id} = useParams();
+  // const [xe, setXe] = useState(null);
+  // useEffect(() => {
+  //   getXe(id).then((result) => {
+  //     setXe(result.data);
+  //   });
+  // }, []);
   const getImage = () => {
     if (!xe?.hinhAnhs || xe.hinhAnhs.length == 0) {
       return "";
@@ -28,19 +30,19 @@ function ProductDetail() {
   };
   const addCartItem = () => {
     if (xe.so_luong == 0) {
-        toast.fire({
-            icon: 'info',
-            title: 'Sản phẩm đã hết hàng',
-            timer: 1500,
-        })
-        return;
+      toast.fire({
+        icon: "info",
+        title: "Sản phẩm đã hết hàng",
+        timer: 1500,
+      });
+      return;
     }
-      dispatch(
-        addCart({
-          id,
-          quantity: 1,
-        })
-      );
+    dispatch(
+      addCart({
+        id,
+        quantity: 1,
+      })
+    );
   };
   return (
     <>
@@ -101,41 +103,10 @@ function ProductDetail() {
             <RentalInfomation />
             <div className="other-product">
               <h3>Có Thể Bạn Sẽ Thích</h3>
-              <div className="other-product-list">
-                <div className="other-product-item">
-                  <div className="other-product-image">
-                    <img src={relationship_image} alt="" />
-                  </div>
-                  <div className="other-product-info">
-                    <div className="product-name">Honda RSX</div>
-                    <div className="product-price">
-                      <span>Giá từ: </span>200.000đ
-                    </div>
-                  </div>
-                </div>
-                <div className="other-product-item">
-                  <div className="other-product-image">
-                    <img src={relationship_image} alt="" />
-                  </div>
-                  <div className="other-product-info">
-                    <div className="product-name">Honda RSX</div>
-                    <div className="product-price">
-                      <span>Giá từ: </span>200.000đ
-                    </div>
-                  </div>
-                </div>
-                <div className="other-product-item">
-                  <div className="other-product-image">
-                    <img src={relationship_image} alt="" />
-                  </div>
-                  <div className="other-product-info">
-                    <div className="product-name">Honda RSX</div>
-                    <div className="product-price">
-                      <span>Giá từ: </span>200.000đ
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <RelatedProduct
+                category={xe && xe.ma_loai}
+                brand={xe && xe.ma_hang}
+              />
             </div>
           </div>
         </div>
