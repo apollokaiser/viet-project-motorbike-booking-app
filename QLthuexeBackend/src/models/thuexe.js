@@ -59,7 +59,7 @@ const thueXe = sequelize.define(
             },
         },
         ma_phi: {
-            type: Sequelize.STRING(20),
+            type: Sequelize.INTEGER,
             references: {
                 model: vanChuyen,
                 key: "ma_phi",

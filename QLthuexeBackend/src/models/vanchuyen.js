@@ -3,13 +3,14 @@ const vanChuyen = sequelize.define(
     "phi_van_chuyen",
     {
         ma_phi: {
-            type: Sequelize.STRING(20),
+            type: Sequelize.INTEGER,
+            autoIncrement:true,
             primaryKey: true,
         },
-        ma_quan: {
+        from: {
             type: Sequelize.INTEGER
         },
-        ma_tinh: {
+        to: {
             type: Sequelize.INTEGER
         },
         phi_van_chuyen: {
