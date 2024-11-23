@@ -4,7 +4,6 @@ import Payment from "./Payment";
 
 function CartContent({cart}) {
   const totalPrice = () =>{
-    console.log(cart.transport_fee);
     let transport_fee = Number(cart.transport_fee.phi_van_chuyen ||0)
     return transport_fee + cart.total;
   }
