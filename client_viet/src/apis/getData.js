@@ -42,7 +42,14 @@ export const getCartDetails = async(cartItems) =>{
 export const getPhiVanChuyen = async() =>{
     try {
         const response = await axios.get("/van-chuyen");
-        console.log(response);
+        return response.data;
+    } catch (error) {
+        return [];
+    }
+}
+export const getRelatedProduct = async(category, brand) =>{
+    try {
+        const response = await axios.get(`/xe/related-products?category=${category}&brand=${brand}`);
         return response.data;
     } catch (error) {
         return [];
