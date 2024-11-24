@@ -55,3 +55,11 @@ export const getRelatedProduct = async(category, brand) =>{
         return [];
     }
 }
+export const getUserInfo = async(id) =>{
+    try {
+        const response = await axios.get(`/khach-hang/thong-tin?id=${id}`);
+        return response.data;
+    } catch (error) {
+        return {};
+    }
+}

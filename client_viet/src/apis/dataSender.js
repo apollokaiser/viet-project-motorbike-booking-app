@@ -25,3 +25,11 @@ export const thanhToanOnline = async (paymentInfo, paymentMethod, orderDetails) 
         return null;
     }
 }
+export const updateUserInfo = async (userInfo, phone = null) => {
+    try {
+        const result = await axios.post("khach-hang/cap-nhat-thong-tin", {userInfo, phone});
+        return result.data;
+    } catch (error) {
+        return null;
+    }
+}

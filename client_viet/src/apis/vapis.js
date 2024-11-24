@@ -12,7 +12,6 @@ const vnapis = axios.create({
 export const getProvince = async () => {
     try {
         const result = await vnapis.get('/province/');
-        console.log(result);
         return result.data.results;
     } catch (error) {
         console.log(error);
