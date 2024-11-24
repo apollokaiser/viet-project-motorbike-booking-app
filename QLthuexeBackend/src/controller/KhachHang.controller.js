@@ -1,8 +1,8 @@
 import express from 'express'
 const router = express.Router()
-import khachHangService from "../service/khachhang.service.js"
+import KhachHangService from '../service/khachhang.service.js'
 
-router.post("/cap-nhat-thong-tin", khachHangService.updateCustomerInfo)
-
+router.get("/thong-tin", KhachHangService.getUserInfo)
+router.post("/cap-nhat-thong-tin", KhachHangService.updateCustomerInfo)
 
 export default router;
