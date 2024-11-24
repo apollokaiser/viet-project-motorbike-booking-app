@@ -7,7 +7,7 @@ import axios from "axios";
 instance.interceptors.request.use((config) =>{
     const token = localStorage.getItem("jwt");
     if (token) {
-        instance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+        config.headers["Authorization"] = `Bearer ${JSON.parse(token)}`;
     }
     return config;
 })
