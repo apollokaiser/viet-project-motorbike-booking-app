@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+import "./search.css"
+
 function Search() {
     const [open, setOpen] = useState(false);
     const [keywords, setKeywords] = useState("")

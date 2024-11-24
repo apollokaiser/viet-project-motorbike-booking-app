@@ -39,6 +39,8 @@ const GoogleAuthButton = () => {
   useEffect(() => {
     const jwtData = decode(localStorage.getItem("jwt"));
     if (jwtData == 999) {
+      localStorage.removeItem("jwt");
+      localStorage.removeItem("refreshToken");
       //xử lý với refreshToken
     } else if (jwtData) {
       dispatch(
@@ -53,7 +55,7 @@ const GoogleAuthButton = () => {
   return (
     <div className="google-login-container">
       {userInfo ? (
-        <AccountInfoButton name={userInfo.ho_ten} />
+        <AccountInfoButton name={userInfo.ho_ten} id={userInfo.google_id}/>
       ) : (
         <GoogleLoginButton onClick={() => loginGoogle()} />
       )}

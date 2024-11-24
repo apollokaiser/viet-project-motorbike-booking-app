@@ -4,7 +4,6 @@ import { toast } from "@/utils/Alert";
 import { thanhToan, thanhToanOnline } from "@/apis/dataSender";
 function ConfirmOrderButton({ paymentInfo, paymentMethod }) {
   const cart = useSelector((state) => state.cart);
-
   const getAddress = () => {
     if (paymentMethod == "OFFLINE") return null;
     return `${paymentInfo.street}, 
@@ -62,43 +61,43 @@ function ConfirmOrderButton({ paymentInfo, paymentMethod }) {
       endDate: paymentInfo.endDate,
       notion: paymentInfo.notion,
     };
-    // if (paymentMethod == "ONLINE") {
-    //   thanhToanOnline(paymentData, paymentMethod, orderDetails).then(
-    //     (result) => {
-    //       if (result.status == 200) window.location.href = result.data;
-    //       else
-    //       Swal.fire({
-    //         title: "Lỗi thanh toán",
-    //         text: "Vui lòng thử lại",
-    //         icon: "error",
-    //         confirmButtonText: "Quay lại",
-    //       });
-    //     }
-    //   );
-    // } else
-    //   thanhToan(paymentData, paymentMethod, orderDetails).then((result) => {
-    //     console.log(result.data);
-    //     if (result.status == 200) {
-    //       (async () => {
-    //         const response = await Swal.fire({
-    //           title: "Đã thanh toán",
-    //           text: "Thông tin đơn hàng đã được gửi đến bạn",
-    //           icon: "success",
-    //           confirmButtonText: "Quay lại trang chủ",
-    //         });
-    //         if (response.isConfirmed) {
-    //           window.location.href = "/";
-    //         }
-    //       })();
-    //     } else {
-    //       Swal.fire({
-    //         title: "Lỗi thanh toán",
-    //         text: "Vui lòng thử lại",
-    //         icon: "error",
-    //         confirmButtonText: "Quay lại",
-    //       });
-    //     }
-    //   });
+    if (paymentMethod == "ONLINE") {
+      thanhToanOnline(paymentData, paymentMethod, orderDetails).then(
+        (result) => {
+          if (result.status == 200) window.location.href = result.data;
+          else
+          Swal.fire({
+            title: "Lỗi thanh toán",
+            text: "Vui lòng thử lại",
+            icon: "error",
+            confirmButtonText: "Quay lại",
+          });
+        }
+      );
+    } else
+      thanhToan(paymentData, paymentMethod, orderDetails).then((result) => {
+        console.log(result.data);
+        if (result.status == 200) {
+          (async () => {
+            const response = await Swal.fire({
+              title: "Đã thanh toán",
+              text: "Thông tin đơn hàng đã được gửi đến bạn",
+              icon: "success",
+              confirmButtonText: "Quay lại trang chủ",
+            });
+            if (response.isConfirmed) {
+              window.location.href = "/";
+            }
+          })();
+        } else {
+          Swal.fire({
+            title: "Lỗi thanh toán",
+            text: "Vui lòng thử lại",
+            icon: "error",
+            confirmButtonText: "Quay lại",
+          });
+        }
+      });
   };
   return (
     <>

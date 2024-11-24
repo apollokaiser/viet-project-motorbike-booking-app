@@ -172,7 +172,7 @@ function Payment() {
               changeMethod={choosePaymentMethod}
               currentMethod={paymentMethod}
             />
-            <ConfirmOrderButton />
+            <ConfirmOrderButton paymentInfo={paymentInfo} paymentMethod={paymentMethod} />
           </div>
         </div>
       </div>
