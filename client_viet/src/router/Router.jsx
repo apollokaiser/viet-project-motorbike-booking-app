@@ -9,6 +9,7 @@ import { getXe } from "@/apis/getData.js";
 import OrderStatus from "@/layouts/OrderStatus.jsx";
 import OrderSuccess from "@comps/payment/OrderSuccess.jsx";
 import OrderFail from "@comps/payment/OrderFail.jsx";
+import UserPage from "@/layouts/UserPage.jsx";
 
 const router = createBrowserRouter([
   {
@@ -40,6 +41,10 @@ const router = createBrowserRouter([
         path: "/gio-hang",
         element: <Cart />,
       },
+      {
+        path:"/thong-tin-khach-hang",
+        element:<UserPage />
+      }
     ],
   },
   {
