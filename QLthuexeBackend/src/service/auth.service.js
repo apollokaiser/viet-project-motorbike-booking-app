@@ -47,7 +47,8 @@ const findOrCreateUser = async(user)=>{
             google_id:user.id,
             ho_ten:user.name,
             email:user.email
-        }
+        },
+        attributes:['google_id','ho_ten','email','CMND',"GPLX"],
     })
     return customer;
 } 
