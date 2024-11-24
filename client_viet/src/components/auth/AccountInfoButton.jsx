@@ -1,9 +1,13 @@
+import Link from "@comps/Link";
+
 export default function AccountInfoButton({ name, id }) {
   return (
     // Thêm router dẫn đến trang cá nhân
     <>
       <button className="account-button">
-        {`Hello ${name.split(" ")[0]}`}
+        <Link to={"/thong-tin-khach-hang"} params={{id}}>
+          {`Hello ${name.split(" ")[0]}`}
+        </Link>
         <span>
           <svg
             xmlns="http://www.w3.org/2000/svg"
