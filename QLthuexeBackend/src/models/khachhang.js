@@ -13,9 +13,6 @@ const khachHang = sequelize.define(
             type: Sequelize.STRING(50),
             primaryKey: true,
         },
-        GPLX: {
-            type: Sequelize.STRING(15),
-        },
         ho_ten: {
             type: Sequelize.STRING(50),
         },
@@ -27,6 +24,12 @@ const khachHang = sequelize.define(
         },
         SDT: {
             type: Sequelize.STRING(20),
+        },
+        GPLX: {
+            type: Sequelize.STRING(15),
+        },
+        GPLX_type:{
+            type: Sequelize.STRING(5),
         }
     },
 );
