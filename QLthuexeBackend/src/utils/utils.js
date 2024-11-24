@@ -10,8 +10,7 @@ class Utils {
             ...user
         },
             secretKey,
-            { algorithm: 'HS256' },
-            { expiresIn: '1h' });
+            { expiresIn: '1h', algorithm:'HS256' });
     }
     /**
      * 
@@ -27,7 +26,6 @@ class Utils {
 
     static getDecodeTokenData(token) {
         try {
-            token = JSON.parse(token);
             const decodedData = jwt.verify(token, secretKey, { algorithms: ['HS256'] });
             return decodedData;
         } catch (error) {
