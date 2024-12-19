@@ -1,15 +1,15 @@
-import { useSelector, useDispatch } from "react-redux";
-import NoCart from "./NoCart";
 import { useEffect } from "react";
-import { getCartDetails } from "@/apis/getData";
+import { useSelector, useDispatch } from "react-redux";
 import { addDetails } from "@/redux/cart/cartSplice";
+import CartService from "@/services/CartService";
 import CartContent from "./CartContent";
+import NoCart from "./NoCart";
 function Cart() {
   const cart = useSelector((state) => state.cart);
   const dispatch = useDispatch();
   useEffect(() => {
     if (cart.items.length > 0)
-      getCartDetails(cart.items).then((result) => {
+     CartService.getCartDetails(cart.items).then((result) => {
         dispatch(addDetails(result.data));
       });
   }, []);

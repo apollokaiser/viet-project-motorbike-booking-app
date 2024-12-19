@@ -1,8 +1,8 @@
-import { useEffect, useState } from "react"
 import UploadImageButton from "@comps/UploadImageButton";
-import uploadImages from "@/utils/uploadImage.js";
-import axios from "@/configs/axios.js";
 import * as XLSX from 'xlsx'
+import Alert from "@utils/Alert";
+import ProductService from "@/services/ProductService";
+import { useState } from "react";
  export default function AddBikes() {
     const [bikes, setBikes] = useState(null);
     const [headers, setHeaders] = useState(null);
@@ -35,28 +35,13 @@ import * as XLSX from 'xlsx'
         setBikes(updatedBikes);
     }
     const addBikes = async () =>{
-        try {
-            const updatedBikes = await Promise.all(
-                bikes.map(async (bike) => {
-                    const secureUrl = await uploadImages(bike.image);
-                    return { ...bike, image: secureUrl };
-                }))
+       const result = await ProductService.uploadAndAddBikes(bikes);
+       if(result) {
+        Alert.showToast("Thêm dữ liệu thành công");
+        return;
+       }
+       Alert.showToast("Thêm dữ liệu thất bại");
 
-
-            const result = await axios.post('/xe/add-xe',{
-                bikes:updatedBikes
-            })
-            
-            
-            
-            if(result.status == 200) {
-                alert("Thêm xe thành công");
-            } else {
-                alert("Thêm xe thất bại");
-            }
-        } catch (error) {
-            console.log("Failed to add motobikes ", error);
-        }
     }
     return (
         <>
@@ -95,7 +80,7 @@ import * as XLSX from 'xlsx'
         <tr>
             {headers && 
             <td colSpan={headers.length}>
-                <button onClick={addBikes} className="add-button">Thêm xe <span>({bikes && bikes.length})</span></button>
+                <button onClick={addBikes} className="add-product-button">Thêm xe <span>({bikes && bikes.length})</span></button>
             </td>
             }
         </tr>

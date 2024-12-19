@@ -1,10 +1,10 @@
-import convertToVND from "@/utils/convertVND";
 import CartItem from "./CartItem";
 import Payment from "./Payment";
+import Utils from "@utils/Utils";
 
 function CartContent({cart}) {
   const totalPrice = () =>{
-    let transport_fee = Number(cart.transport_fee.phi_van_chuyen ||0)
+    let transport_fee = Number(cart.transport_fee.phi_van_chuyen || 0)
     return transport_fee + cart.total;
   }
     return ( <>
@@ -23,15 +23,15 @@ function CartContent({cart}) {
             ))}
           <div className="provisional-value">
             <span>Tạm tính</span>
-            <span>{convertToVND(cart.total)}</span>
+            <span>{Utils.convertToVND(cart.total)}</span>
           </div>
           <div className="provisional-value">
             <span>Phí vận chuyển</span>
-            <span>{convertToVND(cart.transport_fee.phi_van_chuyen || 0)}</span>
+            <span>{Utils.convertToVND(cart.transport_fee.phi_van_chuyen || 0)}</span>
         </div>
           <div className="total-value">
             <span>Tổng tiền</span>
-            <span>{convertToVND(totalPrice())}</span>
+            <span>{Utils.convertToVND(totalPrice())}</span>
           </div>
         </div>
         <Payment />

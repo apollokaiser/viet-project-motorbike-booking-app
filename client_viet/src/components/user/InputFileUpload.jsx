@@ -10,7 +10,7 @@ function InputFileUpload({ children, checkIcon, handleUpload, multiple }) {
     const files = e.target.files;
     if(files){
       if(multiple) {
-        handleUpload(files)
+        handleUpload(files, false);
         return;
       } 
       const file = files[0];
@@ -18,6 +18,10 @@ function InputFileUpload({ children, checkIcon, handleUpload, multiple }) {
         handleUpload(file);
     }
   };
+  const removeUpload = () => {
+    setIsUpload(false);
+    handleUpload(null, true);
+  }
   const VisuallyHiddenInput = styled("input")({
     clip: "rect(0 0 0 0)",
     clipPath: "inset(50%)",
@@ -45,7 +49,7 @@ function InputFileUpload({ children, checkIcon, handleUpload, multiple }) {
           <VisuallyHiddenInput type="file" accept=".jpg,.jpeg,.png" onChange={uploadImage} multiple={multiple} />
         </Button>
         {isUpload && checkIcon && (
-          <CreditScoreIcon fontSize="large" color="success" />
+          <CreditScoreIcon style={{cursor:"pointer"}} fontSize="large" color="success" onClick={removeUpload} />
         )}
       </div>
     </>

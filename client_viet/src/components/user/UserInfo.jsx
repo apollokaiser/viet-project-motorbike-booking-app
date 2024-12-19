@@ -1,12 +1,12 @@
 import { useSearchParams } from "react-router-dom";
-import { getUserInfo } from "@/apis/getData";
 import { useEffect, useState } from "react";
+import UserService from "@/services/UserService";
 function UserInfo() {
   const [query, setQuery] = useSearchParams();
   const id = query.get("id");
   const [user, setUser] = useState({});
   useEffect(() => {
-    getUserInfo(id).then((result) => {
+   UserService.getUserInfo(id).then((result) => {
       if(result.status ==200)
       setUser(result.data);
     });
@@ -46,7 +46,7 @@ function UserInfo() {
               <tr>
                 <th width="30%">SDT</th>
                 <td width="2%">:</td>
-                <td>{user?.sdt || "Không có"}</td>
+                <td>{user?.SDT || "Không có"}</td>
               </tr>
             </tbody>
           </table>

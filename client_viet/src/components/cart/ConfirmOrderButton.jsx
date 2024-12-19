@@ -1,9 +1,9 @@
 import { useSelector } from "react-redux";
-import Swal from "sweetalert2";
-import { toast } from "@/utils/Alert";
-import { thanhToan, thanhToanOnline } from "@/apis/dataSender";
+import Alert from "@/utils/Alert";
+import PaymentService from "@/services/PaymentService";
 function ConfirmOrderButton({ paymentInfo, paymentMethod }) {
   const cart = useSelector((state) => state.cart);
+  const user = useSelector((state) => state.auth.user);
   const getAddress = () => {
     if (paymentMethod == "OFFLINE") return null;
     return `${paymentInfo.street}, 
@@ -13,10 +13,7 @@ function ConfirmOrderButton({ paymentInfo, paymentMethod }) {
   };
   const checkValidInputData = () => {
     if (paymentMethod == "") {
-      toast.fire({
-        title: "Vui lòng chọn phương thức thanh toán",
-        icon: "error",
-      });
+      Alert.showToast("Vui lòng chọn phương thức thanh toán", "error");
       return;
     }
     if (paymentMethod != "OFFLINE") {
@@ -25,18 +22,12 @@ function ConfirmOrderButton({ paymentInfo, paymentMethod }) {
         !paymentInfo.district ||
         !paymentInfo.ward
       ) {
-        toast.fire({
-          title: "Vui lòng nhập đầy đủ thông tin địa chỉ",
-          icon: "error",
-        });
+        Alert.showToast("Vui lòng nhập đầy đủ thông tin địa chỉ", "info");
         return;
       }
     }
     if (paymentInfo.phone == "") {
-      toast.fire({
-        title: "Vui lòng nhập đầy đủ thông tin",
-        icon: "error",
-      });
+      Alert.showToast("Vui lòng nhập đầy đủ thông tin", "info");
       return;
     }
     return true;
@@ -44,6 +35,22 @@ function ConfirmOrderButton({ paymentInfo, paymentMethod }) {
   const handlePayment = () => {
     let valid = checkValidInputData();
     if (!valid) return;
+    if (!user) {
+      Alert.showAlertDialog(
+        "Đăng nhập để đặt hàng",
+        "Vui lòng đăng nhập để có thể sử dụng dịch vụ thuê xe của chúng tôi",
+        "info"
+      );
+      return;
+    }
+    if (!user.GPLX || !user.CMND) {
+      Alert.showAlertDialog(
+        "Vui lòng cập nhật thông tin cá nhân",
+        "Vui lòng truy cập vào trang cá nhân và cập nhật thông tin cần thiết",
+        "warning"
+      );
+      return;
+    }
     const orderDetails = {
       items: cart.items.map((item) => {
         return { ...item, gia_thue: item.detail.gia_thue, detail: null };
@@ -62,42 +69,46 @@ function ConfirmOrderButton({ paymentInfo, paymentMethod }) {
       notion: paymentInfo.notion,
     };
     if (paymentMethod == "ONLINE") {
-      thanhToanOnline(paymentData, paymentMethod, orderDetails).then(
+      PaymentService.thanhToanOnline(
+        paymentData,
+        paymentMethod,
+        orderDetails
+      ).then((result) => {
+        if (result.status == 200) window.location.href = result.data;
+        else if (result.status == 201) {
+          Alert.showAlertDialog(
+            "Không thể thực hiện",
+            "Bạn đã vượt quá giới hạn thuê xe trong 1 ngày",
+            "warning"
+          );
+        } else
+          Alert.showAlertDialog("Lỗi thanh toán", "Vui lòng thử lại", "error");
+      });
+    } else
+      PaymentService.thanhToan(paymentData, paymentMethod, orderDetails).then(
         (result) => {
-          if (result.status == 200) window.location.href = result.data;
-          else
-          Swal.fire({
-            title: "Lỗi thanh toán",
-            text: "Vui lòng thử lại",
-            icon: "error",
-            confirmButtonText: "Quay lại",
-          });
+          if (result.status == 200) {
+            Alert.showAlertDialog(
+              "Đã thanh toán",
+              "Thông tin đơn hàng đã được gửi đến bạn",
+              "success",
+              (confirmed) => (window.location.href = "/")
+            );
+          } else if (result.status == 201) {
+            Alert.showAlertDialog(
+              "Không thể thực hiện",
+              "Bạn đã vượt quá giới hạn thuê xe trong 1 ngày",
+              "warning"
+            );
+          } else {
+            Alert.showAlertDialog(
+              "Lỗi thanh toán",
+              "Vui lòng thử lại",
+              "error"
+            );
+          }
         }
       );
-    } else
-      thanhToan(paymentData, paymentMethod, orderDetails).then((result) => {
-        console.log(result.data);
-        if (result.status == 200) {
-          (async () => {
-            const response = await Swal.fire({
-              title: "Đã thanh toán",
-              text: "Thông tin đơn hàng đã được gửi đến bạn",
-              icon: "success",
-              confirmButtonText: "Quay lại trang chủ",
-            });
-            if (response.isConfirmed) {
-              window.location.href = "/";
-            }
-          })();
-        } else {
-          Swal.fire({
-            title: "Lỗi thanh toán",
-            text: "Vui lòng thử lại",
-            icon: "error",
-            confirmButtonText: "Quay lại",
-          });
-        }
-      });
   };
   return (
     <>

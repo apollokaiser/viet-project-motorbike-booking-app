@@ -1,17 +1,16 @@
 import { useState } from "react";
-import { city } from "@/configs/data";
-import { getDistrict, getWard } from "@/apis/vapis";
+import LocateService, { city } from "@/services/LocateService";
 function Address({ handleDistrict, handleWard, paymentMethod }) {
   const [district, setDistrict] = useState([]);
   const [ward, setWard] = useState([]);
 
   const changeProvince = () => {
-    getDistrict(city.province_id).then((result) => {
+    LocateService.getDistrict(city.province_id).then((result) => {
       setDistrict(result);
     });
   };
   const changeDistrict = (e) => {
-    getWard(e.target.value).then((result) => {
+    LocateService.getWard(e.target.value).then((result) => {
       setWard(result);
     });
     handleDistrict(e);

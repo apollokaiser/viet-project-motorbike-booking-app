@@ -2,39 +2,26 @@ import { useLoaderData, useParams } from "react-router-dom";
 import { useDispatch } from "react-redux";
 
 import { addCart } from "@/redux/cart/cartSplice";
-import convertToVND from "@/utils/convertVND";
 
 import RentalInfomation from "@comps/product/RentalInfomation";
 import RelatedProduct from "@comps/product/RelatedProduct";
 import RentPolicy from "@comps/product/RentPolicy";
-import { toast } from "@/utils/Alert";
+import Alert from "@/utils/Alert";
+import Utils from "@utils/Utils";
 
 function ProductDetail() {
   const xe = useLoaderData();
   const dispatch = useDispatch();
-  const {id} = useParams();
-  // const [xe, setXe] = useState(null);
-  // useEffect(() => {
-  //   getXe(id).then((result) => {
-  //     setXe(result.data);
-  //   });
-  // }, []);
+  const { id } = useParams();
   const getImage = () => {
     if (!xe?.hinhAnhs || xe.hinhAnhs.length == 0) {
       return "";
     }
     return xe.hinhAnhs[0].url;
   };
-  const getVND = () => {
-    return convertToVND(xe?.gia_thue);
-  };
   const addCartItem = () => {
     if (xe.so_luong == 0) {
-      toast.fire({
-        icon: "info",
-        title: "Sản phẩm đã hết hàng",
-        timer: 1500,
-      });
+      Alert.showToast("Sản phẩm đã hết hàng", "info", 1500);
       return;
     }
     dispatch(
@@ -77,7 +64,8 @@ function ProductDetail() {
               </button>
             </div>
             <div className="product-price">
-              <span>Giá từ :</span> <span className="price">{getVND()}</span>
+              <span>Giá từ :</span>{" "}
+              <span className="price">{Utils.convertToVND(xe?.gia_thue)}</span>
             </div>
             <div className="basic-info">
               {/* <div><span>Đời xe: </span> <span>SH 2020</span></div>

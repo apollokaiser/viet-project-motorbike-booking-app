@@ -7,7 +7,8 @@ function Page() {
         <>
             <Header/>
             <Navbar/>
-            <Outlet/>
+            <Outlet />
+            
             <Footer/>
         </>
      );

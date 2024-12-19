@@ -1,17 +1,17 @@
-import { city } from "@/configs/data";
 import { useEffect, useState } from "react";
 import DateTime from "@comps/DateTimePicker/DateTime";
 import dayjs from "dayjs";
-import { getPhiVanChuyen } from "@/apis/getData";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setTransportFee } from "@/redux/cart/cartSplice";
-import { checkAddressDistance } from "@/apis/goongAPI";
 import Address from "./Address";
 import PaymentMethod from "./PaymentMethod";
 import ConfirmOrderButton from "./ConfirmOrderButton";
+import LocateService, {city} from "@/services/LocateService";
+import TransportService from "@/services/TransportService";
 
 function Payment() {
   const date = new Date();
+  const user = useSelector((state) => state.auth.user);
   const dispatch = useDispatch();
   const [paymentMethod, setPaymentMethod] = useState("");
   const [phiVanChuyen, setPhiVanChuyen] = useState([]);
@@ -25,8 +25,9 @@ function Payment() {
     endDate: dayjs(date).add(1, "day").unix(),
   });
   useEffect(() => {
-    getPhiVanChuyen().then((result) => {
-      setPhiVanChuyen(result.data);
+   TransportService.getPhiVanChuyen().then((result) => {
+    console.log(result);
+      setPhiVanChuyen(result);
     });
   }, []);
   const resetTransport = () => {
@@ -50,7 +51,8 @@ function Payment() {
       );
     } else {
       //check transport fee again
-      checkAddressDistance(getAddress()).then((result) => {
+      LocateService.checkAddressDistance(getAddress()).then((result) => {
+        console.log(result);
         const fee = phiVanChuyen.find(
           (item) => item.from <= result && result <= item.to
         );
@@ -106,7 +108,7 @@ function Payment() {
                   placeholder=""
                   type="text"
                   className="input"
-                  value={paymentInfo.name}
+                  value={paymentInfo.name == "" ? user?.name : paymentInfo.name}
                   onChange={handleChangeInput}
                   name="name"
                 />
@@ -172,7 +174,10 @@ function Payment() {
               changeMethod={choosePaymentMethod}
               currentMethod={paymentMethod}
             />
-            <ConfirmOrderButton paymentInfo={paymentInfo} paymentMethod={paymentMethod} />
+            <ConfirmOrderButton
+              paymentInfo={paymentInfo}
+              paymentMethod={paymentMethod}
+            />
           </div>
         </div>
       </div>
