@@ -37,9 +37,9 @@ const ctThueXe = sequelize.define(
     },
 );
 // 1-n
-Xe.hasMany(ctThueXe, { foreignKey: 'ma_xe' });
-ctThueXe.belongsTo(Xe, { foreignKey: 'ma_xe' });
+Xe.hasMany(ctThueXe, { foreignKey: 'ma_xe', as:"detail" });
+ctThueXe.belongsTo(Xe, { foreignKey: 'ma_xe', as:"xe" });
 //1-n
-thueXe.hasMany(ctThueXe, { foreignKey: 'ma_don_dat' });
-ctThueXe.belongsTo(thueXe, { foreignKey: 'ma_don_dat' })
+thueXe.hasMany(ctThueXe, { foreignKey: 'ma_don_dat', as:"detail" });
+ctThueXe.belongsTo(thueXe, { foreignKey: 'ma_don_dat', as:"order" })
 export default ctThueXe;

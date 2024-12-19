@@ -14,24 +14,24 @@ const thueXe = sequelize.define(
             allowNull: false,
         },
         ngay_bat_dau_thue: {
-            type:Sequelize.BIGINT(19),
+            type: Sequelize.BIGINT(19),
             allowNull: false,
         },
         ngay_tra: {
-            type:Sequelize.BIGINT(19),
+            type: Sequelize.BIGINT(19),
             allowNull: false,
         },
-        ten_nguoi_nhan:{
+        ten_nguoi_nhan: {
             type: Sequelize.STRING(100),
         },
-        dia_chi_nhan:{
+        dia_chi_nhan: {
             type: Sequelize.TEXT,
         },
-        sdt:{
+        sdt: {
             type: Sequelize.STRING(20),
             allowNull: false,
         },
-        yeu_cau:{
+        yeu_cau: {
             type: Sequelize.TEXT,
             allowNull: true,
         },
@@ -39,7 +39,7 @@ const thueXe = sequelize.define(
             type: Sequelize.DECIMAL(10, 2),
             allowNull: false,
         },
-        phi_van_chuyen:{
+        phi_van_chuyen: {
             type: Sequelize.DECIMAL(10, 2),
             allowNull: false,
         },
@@ -50,6 +50,14 @@ const thueXe = sequelize.define(
         tinh_trang_thue: {
             type: Sequelize.INTEGER,
             allowNull: false,
+        },
+        da_giao_tien:{
+            type: Sequelize.TINYINT(1),
+            defaultValue: false,
+        },
+        tien_the_chan: {
+            type: Sequelize.DECIMAL(10, 2),
+            allowNull: true
         },
         google_id: {
             type: Sequelize.STRING(50),
@@ -71,6 +79,6 @@ const thueXe = sequelize.define(
 //thue xe 1-n
 khachHang.hasMany(thueXe, { foreignKey: 'google_id' });
 thueXe.belongsTo(khachHang, { foreignKey: 'google_id' });
-vanChuyen.hasMany(thueXe, { foreignKey: 'ma_phi',as:"thueXe" });
-thueXe.belongsTo(vanChuyen, { foreignKey: 'ma_phi', as:'vanChuyen' });
+vanChuyen.hasMany(thueXe, { foreignKey: 'ma_phi', as: "thueXe" });
+thueXe.belongsTo(vanChuyen, { foreignKey: 'ma_phi', as: 'vanChuyen' });
 export default thueXe;

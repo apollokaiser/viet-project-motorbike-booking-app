@@ -15,19 +15,12 @@ const thanhToan = sequelize.define(
             }),
         },
         ngay_tt: {
-            type: Sequelize.DATE,
+            type: Sequelize.BIGINT(20),
             allowNull:false
         },
         so_tien_tt: {
             type: Sequelize.DECIMAL(10,2),
             allowNull:false
-        },
-        noi_dung_tt: {
-            type: Sequelize.STRING(1000),
-        },
-        tien_the_chan: {
-            type: Sequelize.DECIMAL(10,2),
-            allowNull:true
         },
         //FK_THUEXE_THANHTOAN
         ma_don_dat: {

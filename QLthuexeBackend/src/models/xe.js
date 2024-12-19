@@ -66,10 +66,10 @@ const Xe = sequelize.define(
 );
 // loai xe 1-n
 loaiXe.hasMany(Xe, { foreignKey:'ma_loai'});
-Xe.belongsTo(loaiXe,{foreignKey:'ma_loai'});
+Xe.belongsTo(loaiXe,{foreignKey:'ma_loai', as:"category"});
 //hang xe 1-n
 hangXe.hasMany(Xe,{foreignKey:'ma_hang'});
-Xe.belongsTo(hangXe,{foreignKey:'ma_hang'});
+Xe.belongsTo(hangXe,{foreignKey:'ma_hang', as: "brand"});
 
 export default Xe;
 

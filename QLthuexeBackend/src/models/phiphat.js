@@ -38,8 +38,8 @@ const phiPhat = sequelize.define(
 );
 
 //1-1
-thueXe.hasOne(phiPhat, { foreignKey: 'ma_don_dat' });
-phiPhat.belongsTo(thueXe, { foreignKey: 'ma_don_dat' });
+thueXe.hasOne(phiPhat, { foreignKey: 'ma_don_dat', as:"phat" });
+phiPhat.belongsTo(thueXe, { foreignKey: 'ma_don_dat', as:"order" });
 
 
 export default phiPhat;
