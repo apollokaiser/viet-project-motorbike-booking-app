@@ -20,6 +20,7 @@ sequelize.sync({ alter: true })
     initialize.addLoaiXes();
     initialize.addHangXes();
     initialize.addPhiVanChuyen();
+    initialize.addAdminAccount();
   })
   .catch((err) => {
     console.error('Lỗi đồng bộ hóa cơ sở dữ liệu:', err);
