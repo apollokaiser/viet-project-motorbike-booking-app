@@ -28,6 +28,10 @@
     text-decoration: none;
     color: inherit !important;
   }
+  a:hover {
+    text-decoration: none !important;
+    color: inherit !important;
+  }
   /*free icon css*/
   .st0 {
     fill: none;
@@ -1258,6 +1262,21 @@
     width: 50px;
     height: 50px;
   } 
+  .add-product-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    background-color: #039be5;
+    color: #ffffff;
+    cursor: pointer;
+    font-size: 15px;
+    text-transform: uppercase;
+    transition: 0.3s ease-in-out;
+    margin-left: 10px;
+  }
   /*css for account button*/
   /* From Uiverse.io by Yaya12085 */ 
 .account-button{
