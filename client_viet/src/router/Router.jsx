@@ -1,19 +1,31 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import ProductDetail from "../layouts/ProductDetail.jsx";
-import AddBikes from "../layouts/AddBikes.jsx";
-import Page from "../layouts/Page.jsx";
-import Home from "../layouts/Home.jsx";
-import SearchResult from "../layouts/SearchResult.jsx";
-import Cart from "@comps/cart/Cart.jsx";
-import { getXe } from "@/apis/getData.js";
-import OrderStatus from "@/layouts/OrderStatus.jsx";
+
+//Admin
+import AdminLoginPage from "@/pages/admin/Login/AdminLoginPage.jsx";
+import AdminHome from "../pages/admin/Home/Home.jsx";
+//Web (user)
+import ProductDetail from "../pages/web/Product/ProductDetail.jsx";
+import SearchResult from "../pages/web/Search/SearchResult.jsx";
 import OrderSuccess from "@comps/payment/OrderSuccess.jsx";
+import OrderStatus from "@pages/web/Order/OrderStatus.jsx";
+import UserPage from "@pages/web/Profile/UserPage.jsx";
 import OrderFail from "@comps/payment/OrderFail.jsx";
-import UserPage from "@/layouts/UserPage.jsx";
+import Home from "../pages/web/Home/Home.jsx";
+import Cart from "@comps/cart/Cart.jsx";
+//layouts
+import AdminPage from "@/layouts/admin/Page.jsx";
+import Page from "@/layouts/web/Page.jsx";
+
+import ProductPage from "@pages/admin/Product/ProductPage.jsx";
+import ProductContent from "@comps/admin/product/ProductContent.jsx";
+import ProductService from "@/services/ProductService.js";
+import NotFound from "@pages/error/NotFound.jsx";
+import Unauthorized from "@pages/error/Unauthorized.jsx";
+import JWTService from "@/services/JWTService.js";
 
 const router = createBrowserRouter([
   {
-    path: "/",
+    path: "",
     element: <Page />,
     children: [
       {
@@ -22,14 +34,10 @@ const router = createBrowserRouter([
         index: true,
       },
       {
-        path: "/add-bikes",
-        element: <AddBikes />,
-      },
-      {
         path: "/chi-tiet-xe/:id",
         element: <ProductDetail />,
         loader: async ({ params }) => {
-          const result = await getXe(params.id);
+          const result = await ProductService.getBike(params.id);
           return result.data;
         },
       },
@@ -60,7 +68,47 @@ const router = createBrowserRouter([
         element: <OrderFail />
       }
     ],
+  }, {
+    path:"login/admin",
+    element:<AdminLoginPage />,
+    loader: () =>{
+      const admin = JWTService.decode(localStorage.getItem("jwt_admin"));
+      if (admin) {
+        return <AdminHome />;
+      } else {
+        return <AdminLoginPage />;
+      }
+    }
   },
+  {
+    path: "/admin",
+    element: <AdminPage />,
+    children:[
+      {
+        path:"",
+        element:<AdminHome />
+      },
+      {
+        path:"product",
+        element:<ProductPage />,
+        children:[
+          {
+            path:"",
+            element:<ProductContent />,
+            index: true,
+          },
+        ]
+      }
+    ]
+  },
+  {
+    path: "/unauthorized",
+    element: <Unauthorized />
+  },
+  {
+    path: "*",
+    element: <NotFound />
+  }
 ]);
 function Router({ children }) {
   return (
