@@ -14,4 +14,9 @@ const authentication =(req, res, next) =>{
     req.user = user;
     next();
 }
+export const authorizationAdmin = (req,res,next) =>{
+    if(req.user && !req.user.ma_nv) 
+        return res.status(401).json({message: 'Unauthorized administrators'});
+    next();
+}
 export default authentication;
