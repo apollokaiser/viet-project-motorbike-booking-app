@@ -49,13 +49,19 @@ class KhachHangService {
     static async updateCustomerInfo(req, res) {
         try {
             const { userInfo } = req.body;
-            const user = {
-                CMND: userInfo.CMND.id,
-                GPLX: userInfo.GPLX.id,
-                ho_ten: userInfo.CMND.name,
-                sdt: userInfo.phone,
-                GPLX_type: userInfo.GPLX.class
+            console.log(userInfo);
+            if(!userInfo) throw new Error("User not found");
+            let user = {}
+            if (userInfo.CMND) {
+                user.CMND = userInfo.CMND.id;
+                user.ho_ten = userInfo.CMND.name;
             }
+            if (userInfo.GPLX) {
+                user.GPLX = userInfo.GPLX.id;
+                user.GPLX_type = userInfo.GPLX.class;
+            }
+            if (userInfo.phone) user.SDT = userInfo.phone;
+            console.log(user);
             const result = await khachHang.update(user,
                 {
                     where: { google_id: req.user.google_id }
@@ -65,7 +71,10 @@ class KhachHangService {
                 return res.status(200).send(new ResponseMessage("cannot update", 400));
             }
             delete user.GPLX_type;
-            delete user.sdt;
+            delete user.scopedSlots;
+            user.ho_ten = user.ho_ten || req.user.ho_ten;
+            user.CMND = user.CMND || req.user.CMND;
+            user.GPLX =user.GPLX || req.user.GPLX;
             user.google_id = req.user.google_id;
             user.email = req.user.email;
             const jwt = utils.createJWT(user);

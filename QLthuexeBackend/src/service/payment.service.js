@@ -16,6 +16,9 @@ import Xe from "../models/xe.js";
 
 class ThueXeService {
     static async thanhToan(req, res) {
+        const noOrderInLast24h = await checkRecentOrder(req.user.google_id);
+        if (!noOrderInLast24h) return res.status(200)
+            .send(new ResponseMessage("You have an order in last 24h", 201));
         try {
             const donThueXe = await addOrder(req);
             return donThueXe ?
@@ -24,12 +27,15 @@ class ThueXeService {
                 res.status(200)
                     .send(new ResponseMessage("Failed to insert order", 400))
         } catch (error) {
-            console.log(error);
             return res.status(200)
                 .send(new ResponseMessage(error.message, 400))
         }
     }
     static async redirectToVnPay(req, res, next) {
+        const noOrderInLast24h = await checkRecentOrder(req.user.google_id);
+        if (!noOrderInLast24h) return res.status(200)
+            .send(new ResponseMessage("You have an order in last 24h", 201));
+        
         process.env.TZ = 'Asia/Ho_Chi_Minh';
         let vnp_Url = process.env.VNP_URL;
         const { orderDetails } = req.body;
@@ -71,14 +77,15 @@ class ThueXeService {
             const orderId = vnp_Params['vnp_TxnRef'];
             try {
                 const updateOrder = await thueXe.update({
-                    tinh_trang_thue: orderStatus.WAITING_CONFIRMATION.id
+                    tinh_trang_thue: orderStatus.WAITING_CONFIRMATION.id,
+                    da_giao_tien: true,
                 },
                     {
                         where: {
                             ma_don_dat: orderId
                         }
                     });
-                    if(!updateOrder) throw new Error("error updating order");
+                if (!updateOrder) throw new Error("error updating order");
             } catch (error) {
                 console.log("thanhToanOnline error: " + error);
                 return res.redirect(`${clientHost}/thanh-toan/fail-successfully?code=${vnp_Params['vnp_ResponseCode']}&order=${orderId}`);
@@ -87,6 +94,28 @@ class ThueXeService {
         } else {
             return res.redirect(`${clientHost}/thanh-toan/that-bai?code=${vnp_Params['vnp_ResponseCode']}`);
         }
+    }
+    static async updateOrderStatus(req, res) {
+        const { id, status } = req.params;
+        if (!id || !status) throw new Error("Invalid request parameter");
+        try {
+            const result = await thueXe.update({
+                tinh_trang_thue: status
+            },
+                {
+                    where: {
+                        ma_don_dat: id
+                    }
+                })
+            if (!result) throw new Error("Error updating");
+            return status(200)
+                .send(new ResponseMessage("Update successfully", 200))
+        } catch (error) {
+            console.log("updateOrderStatus error: " + error);
+            return res.status(200)
+                .send(new ResponseMessage(error.message, 400))
+        }
+
     }
 }
 
@@ -110,6 +139,7 @@ const createNewOrder = (req, pending = false) => {
         sdt: paymentInfo.phone,
         yeu_cau: paymentInfo.notion,
         tinh_trang_thue: !pending ? orderStatus.WAITING_CONFIRMATION.id : orderStatus.PENDING_PAYMENT.id,
+        da_giao_tien:false,
         tong_tien: orderDetails.total,
         phi_van_chuyen: orderDetails.transport_fee,
         tong_thue: orderDetails.tong_thue,
@@ -193,7 +223,32 @@ const checkQuantity = async (orderDetails, transaction = null, update = true) =>
         await transaction.rollback();
         throw error;
     }
+}
 
+const checkRecentOrder = async (googleId) => {
+    const twentyFourHoursAgo = new Date();
+    twentyFourHoursAgo.setHours(twentyFourHoursAgo.getHours() - 24);
+    try {
+        const result = await thueXe.findOne({
+            where: {
+                google_id: googleId,
+                createdAt: {
+                    [Op.gte]: twentyFourHoursAgo,
+                    // tinh_trang_thue: {
+                    //     [Op.notIn]: [orderStatus. WAITING_CONFIRMATION.id]
+                    // }
+                },
+            }
+        })
+        console.log(result);
+        if (result) {
+            throw new Error("Bạn đã đặt hàng trong vòng 24h");
+        }
+        return true;
+    } catch (error) {
+        console.log(error);
+        return false;
+    }
 }
 export default ThueXeService;
 

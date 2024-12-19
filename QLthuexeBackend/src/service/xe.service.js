@@ -2,6 +2,10 @@ import Xe from "../models/xe.js";
 import hinhAnh from "../models/hinhanh.js";
 import Utils from "../utils/utils.js"
 import { ResponseMessage, ResponseBody } from "./payload/ResponseMessage.js"
+import { sequelize } from "../models/index.js";
+import ProductStatistic from "./payload/ProductStatistic.js";
+import loaiXe from "../models/loaixe.js";
+import hangXe from "../models/hangxe.js";
 class XeService {
     static async getALLXe(req, res) {
         try {
@@ -15,7 +19,8 @@ class XeService {
                     model: hinhAnh,
                     as: "hinhAnhs",
                     attributes: ["url"]
-                }
+                },
+                attributes: ["ma_xe", "ten_xe", "gia_thue"]
             });
 
             if (xe) {
@@ -32,6 +37,55 @@ class XeService {
         } catch (error) {
             console.error(error);
             return res.status(500).send({
+                status: 500,
+                message: "Internal Server Error"
+            });
+        }
+    }
+    static async getAllXeData(req, res) {
+        try {
+            const { status, category } = req.query;
+            let condition = status == true || status == false ? { tinh_trang_xe: status, ma_loai: category } : undefined;
+            if (!category) delete condition.ma_loai;
+            const xe = await Xe.findAll({
+                where: condition,
+                include: [
+                    {
+                        model: hinhAnh,
+                        as: "hinhAnhs",
+                        attributes: ["url"]
+                    },
+                    {
+                        model: loaiXe,
+                        as: "category",
+                        attributes: ["ten_loai"]
+                    },
+                    {
+                        model: hangXe,
+                        as: "brand",
+                        attributes: ["ten_hang"]
+                    }
+                ],
+                attributes: {
+                    exclude: ["createdAt", "updatedAt", "ma_loai", "ma_hang"]
+                }
+            })
+            if (xe.length) {
+                delete xe.category;
+                delete xe.brand;
+                return res.status(200).send({
+                    status: 200,
+                    data: xe
+                });
+            } else {
+                return res.status(200).send({
+                    status: 404,
+                    message: "No xe found"
+                });
+            }
+        } catch (error) {
+            console.error(error);
+            return res.status(200).send({
                 status: 500,
                 message: "Internal Server Error"
             });
@@ -139,6 +193,35 @@ class XeService {
 
         }
     }
+    static async deleteXe(req, res) {
+        try {
+            const { id, mode } = req.query;
+            console.log(id, mode);
+            if (!id) throw new Error("Invalid params");
+            if (mode == 1) return await XeService.disableXe(req, res);
+            const xe = await Xe.destroy({
+                where: { ma_xe: id }
+            });
+            if (!xe)
+                return res.status(200).send(new ResponseMessage("No bike found", 404));
+            return res.status(200).send(new ResponseMessage("Delete bike successfully", 200));
+        } catch (error) {
+            console.log(error);
+            return res.status(200).send(new ResponseMessage("error", 400));
+        }
+    }
+    static async disableXe(req, res) {
+        const { id } = req.query;
+        const xe = await Xe.update({
+            tinh_trang_xe: false,
+        }, {
+            where: { ma_xe: id }
+        })
+        if (!xe)
+            return res.status(200).send(new ResponseMessage("Cannot disable bike", 404));
+        return res.status(200).send(new ResponseMessage("Delete bike successfully", 200));
+    }
+
     static async getRelatedProducts(req, res) {
         const { category, brand } = req.query;
         try {
@@ -152,6 +235,37 @@ class XeService {
                 attributes: ["ma_xe", "ten_xe", "gia_thue"]
             })
             return res.status(200).send(new ResponseBody("Get related products successfully", result));
+        } catch (error) {
+            console.log(error);
+            return res.status(200).send(new ResponseMessage("error", 400));
+        }
+    }
+    static async getBikeStatus(req, res) {
+        try {
+            const result = await sequelize.query("call load_bike_status()");
+            if (!result)
+                return res.status(200).send(new ResponseMessage("No data found", 404));
+            // result[0] = {total: ..., rented: ...,}
+            const data = new ProductStatistic(result[0]?.total, result[0]?.rented).getData();
+            return res.status(200).send(new ResponseBody("Get bike status successfully", data));
+        } catch (error) {
+            console.log(error);
+            return res.status(200).send(new ResponseMessage("error", 400));
+        }
+    }
+    static async activeBike(req, res) {
+        try {
+            const { id } = req.query;
+            console.log(id);
+            const xe = await Xe.update({
+                tinh_trang_xe: true,
+            }, {
+                where: { ma_xe: id }
+            })
+            if (!xe) {
+                return res.status(200).send(new ResponseMessage("Cannot active bike", 404));
+            }
+            return res.status(200).send(new ResponseMessage("Active bike successfully", 200));
         } catch (error) {
             console.log(error);
             return res.status(200).send(new ResponseMessage("error", 400));
