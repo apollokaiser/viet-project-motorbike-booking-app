@@ -1,6 +1,7 @@
 import hangXe from "../models/hangxe.js";
 import loaiXe from "../models/loaixe.js";
 import vanChuyen from "../models/vanchuyen.js";
+import nhanVien from "../models/nhanvien.js"
 const brandsData = [
     {
         ma_hang: "HONDA",
@@ -47,6 +48,12 @@ const phiVanChuyenData = [
         phi_van_chuyen: 40000
     }
 ]
+const admin = {
+    ma_nv: "admin",
+    ho_ten: "Admin",
+    email: "admin@example.com",
+    mat_khau: "admin123",
+}
 
 export const addLoaiXes = async () => {
     try {
@@ -78,6 +85,16 @@ export const addPhiVanChuyen = async () => {
         console.log("Initialize - PHI VAN CHUYEN failed: " + error)
     }
 }
+export const addAdminAccount = async () => {
+    try {
+        const count = await nhanVien.count();
+        if (count == 0) {
+            nhanVien.create(admin);
+        }
+    } catch (error) {
+        console.log("Initialize - ADMIN ACCOUNT failed: " + error)
+    }
+}
 
 
 export const orderStatus = {
@@ -98,11 +115,11 @@ export const orderStatus = {
         name: 'Đã giao'
     },
     RETURNED: {
-        id: 3,
+        id: 4,
         name: 'Đã trả'
     },
     CANCELLED: {
-        id: 4,
+        id: 5,
         name: 'Đã hủy'
     }
 }

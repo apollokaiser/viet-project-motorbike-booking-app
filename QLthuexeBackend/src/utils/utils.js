@@ -21,7 +21,7 @@ class Utils {
             ...user
         },
             secretRefreshToken,
-            { expiresIn: '7d' });
+            { expiresIn: '7d' })
     }
 
     static getDecodeTokenData(token) {
@@ -83,7 +83,7 @@ class Utils {
         vnp_Params = this.sortObject(vnp_Params);
         let signData = QueryString.stringify(vnp_Params, { encode: false });
         let hmac = crypto.createHmac("sha512", vnp_SecretKey);
-        let signed = hmac.update(new Buffer(signData, 'utf-8')).digest("hex");
+        let signed = hmac.update(Buffer.from(signData, 'utf-8')).digest("hex");
         vnp_Params['vnp_SecureHash'] = signed;
         vnpUrl += '?' + QueryString.stringify(vnp_Params, { encode: false });
         return vnpUrl;
@@ -92,9 +92,17 @@ class Utils {
         vnp_Params = this.sortObject(vnp_Params);
         let signData = QueryString.stringify(vnp_Params, { encode: false });
         let hmac = crypto.createHmac("sha512", secretKey);
-        let signed = hmac.update(new Buffer(signData, 'utf-8')).digest("hex");
+        let signed = hmac.update( Buffer.from(signData, 'utf-8')).digest("hex");
         return signed;
     }
+    static formatUTF8(str) {
+        return str.trim().toLowerCase()
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "") 
+          .replace(/đ/g, "d") 
+          .replace(/Đ/g, "D") 
+          .replace(" ", "_")
+      }
 }
 
 
