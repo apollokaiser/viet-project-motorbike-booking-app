@@ -1,4 +1,4 @@
-import Swal, { SweetAlertIcon } from "sweetalert2";
+import Swal from "sweetalert2";
 const toast = Swal.mixin({
     toast: true,
     position: 'top-end',
@@ -14,12 +14,13 @@ export default class Alert {
     /**
  * 
  * @param {string} message 
- * @param {SweetAlertIcon} icon 
+ * @param {import("sweetalert2").SweetAlertIcon} icon 
  */
-    static showToast = (message, icon) => {
+    static showToast = (message, icon, timeout=3000) => {
         toast.fire({
             icon: icon,
             title: message,
+            timer: timeout
         });
     }
     static showError = (message) => {
@@ -30,7 +31,7 @@ export default class Alert {
     }
     /**
      * @param {string} message 
-     * @param {SweetAlertIcon} icon 
+     * @param {import("sweetalert2").SweetAlertIcon} icon 
      * @param {Function} cb 
      */
     static showAlertDialog = (title, message, icon = "success", cb = null, buttonText = "Trở lại") => {
