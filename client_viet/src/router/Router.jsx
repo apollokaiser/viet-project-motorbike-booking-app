@@ -4,14 +4,13 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import AdminLoginPage from "@/pages/admin/Login/AdminLoginPage.jsx";
 import AdminHome from "../pages/admin/Home/Home.jsx";
 //Web (user)
-import ProductDetail from "../pages/web/Product/ProductDetail.jsx";
-import SearchResult from "../pages/web/Search/SearchResult.jsx";
+import ProductDetail from "../pages/web/Product/ProductDetailPage.jsx";
+import SearchPage from "../pages/web/Search/SearchResult.jsx";
 import OrderSuccess from "@comps/payment/OrderSuccess.jsx";
 import OrderStatus from "@pages/web/Order/OrderStatus.jsx";
 import UserPage from "@pages/web/Profile/UserPage.jsx";
 import OrderFail from "@comps/payment/OrderFail.jsx";
-import Home from "../pages/web/Home/Home.jsx";
-import Cart from "@comps/cart/Cart.jsx";
+import HomePage from "../pages/web/Home/HomePage.jsx";
 //layouts
 import AdminPage from "@/layouts/admin/Page.jsx";
 import Page from "@/layouts/web/Page.jsx";
@@ -22,6 +21,8 @@ import ProductService from "@/services/ProductService.js";
 import NotFound from "@pages/error/NotFound.jsx";
 import Unauthorized from "@pages/error/Unauthorized.jsx";
 import JWTService from "@/services/JWTService.js";
+import CartPage from "@pages/web/Cart/CartPage.jsx";
+import UpdateProductPage from "@pages/admin/Product/UpdateProductPage.jsx";
 
 const router = createBrowserRouter([
   {
@@ -30,7 +31,7 @@ const router = createBrowserRouter([
     children: [
       {
         path: "",
-        element: <Home />,
+        element: <HomePage />,
         index: true,
       },
       {
@@ -43,11 +44,11 @@ const router = createBrowserRouter([
       },
       {
         path: "/tim-kiem",
-        element: <SearchResult />,
+        element: <SearchPage />,
       },
       {
         path: "/gio-hang",
-        element: <Cart />,
+        element: <CartPage />,
       },
       {
         path:"/thong-tin-khach-hang",
@@ -97,6 +98,10 @@ const router = createBrowserRouter([
             element:<ProductContent />,
             index: true,
           },
+          {
+            path:"cap-nhat-xe",
+            element:<UpdateProductPage />
+          }
         ]
       }
     ]
