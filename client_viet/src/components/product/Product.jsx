@@ -1,8 +1,9 @@
 import { NavLink } from "react-router-dom";
 import Utils from "@utils/Utils";
 
-function Product({ product }) {
+function Product({ product, image }) {
   const getIntroImage = () => {
+    if(image) return image;
     if (!product.hinhAnhs || product.hinhAnhs.length == 0) {
       return "";
     }
