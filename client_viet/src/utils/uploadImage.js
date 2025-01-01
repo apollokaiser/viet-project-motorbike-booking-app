@@ -12,13 +12,15 @@ async function uploadImages(image, uploadPreset=null){
     if(!image) return null;
     const url = `${UPLOAD_ENDPOINT}/${CLOUD_NAME}/upload`
     const formData = new FormData();
-
     formData.append('file', image);
     formData.append('upload_preset', uploadPreset ? uploadPreset: "default_preset")
     try {
         console.log("Uploading " + image.name);
         const response = await axios.post(url, formData)
-        return response.data.secure_url;
+        return {
+            secureUrl:response.data.secure_url,
+            publicId:response.data.public_id,
+        };
     } catch (error) {
         console.log("Failed to upload" + error.message);
         return null;

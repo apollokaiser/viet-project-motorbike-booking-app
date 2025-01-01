@@ -16,8 +16,10 @@ export default class Alert {
  * @param {string} message 
  * @param {import("sweetalert2").SweetAlertIcon} icon 
  */
-    static showToast = (message, icon, timeout=3000) => {
+    static showToast = (message, icon, timeout=3000,target=null) => {
+        target ??= document.getElementById("root");
         toast.fire({
+            target,
             icon: icon,
             title: message,
             timer: timeout

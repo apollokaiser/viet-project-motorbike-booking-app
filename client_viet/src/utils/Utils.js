@@ -9,7 +9,6 @@ export default class Utils {
     }
     static sortObjects(array, property = "ma_xe", search = null, ascending = true) {
         if (!array || array.length === 0) return [];
-
         // Lọc nếu search có giá trị hợp lệ
         if (search?.trim()) {
             array = array.filter((item) =>
