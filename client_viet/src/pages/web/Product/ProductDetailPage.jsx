@@ -1,36 +1,39 @@
 import { useLoaderData, useParams } from "react-router-dom";
-import { useDispatch } from "react-redux";
-
-import { addCart } from "@/redux/cart/cartSplice";
 
 import RentalInfomation from "@comps/product/RentalInfomation";
 import RelatedProduct from "@comps/product/RelatedProduct";
 import RentPolicy from "@comps/product/RentPolicy";
-import Alert from "@/utils/Alert";
 import Utils from "@utils/Utils";
+import SelectField from "@comps/form/SelectField";
+import { useMemo, useState } from "react";
+import AddCartButton from "./AddCartButton";
 
-function ProductDetail() {
+function ProductDetailPage() {
   const xe = useLoaderData();
-  const dispatch = useDispatch();
   const { id } = useParams();
+  const [chooseBSX, setChooseBSX] = useState();
   const getImage = () => {
     if (!xe?.hinhAnhs || xe.hinhAnhs.length == 0) {
       return "";
     }
     return xe.hinhAnhs[0].url;
   };
-  const addCartItem = () => {
-    if (xe.so_luong == 0) {
-      Alert.showToast("Sản phẩm đã hết hàng", "info", 1500);
-      return;
+  const chooseBienSoXe = (name, value) =>{
+    setChooseBSX(value);
+  }
+  const BienSoXeList = useMemo(() =>{
+    if (!xe || xe.bienSoXes.length == 0) return false;
+    if (
+      xe &&
+      xe.bienSoXes.every((item) => item.dang_thue || !item.tinh_trang)
+    ) {
+      return false;
     }
-    dispatch(
-      addCart({
-        id,
-        quantity: 1,
-      })
-    );
-  };
+    const filtered = xe.bienSoXes.filter((item) => !item.dang_thue && item.tinh_trang);
+    // lấy giá trị ban đầu cho "chooseBSX"
+    setChooseBSX(filtered[0].bien_so);
+    return filtered;
+  }, [xe]);
   return (
     <>
       <div className="fade-in main-content">
@@ -67,9 +70,7 @@ function ProductDetail() {
               <span>Giá từ :</span>{" "}
               <span className="price">{Utils.convertToVND(xe?.gia_thue)}</span>
             </div>
-            <div className="basic-info">
-              {/* <div><span>Đời xe: </span> <span>SH 2020</span></div>
-                        <div><span>Lượt thuê: </span><span>4700</span></div> */}
+            {/* <div className="basic-info">
               <div className="procedure-info">
                 <span>
                   ☑️Thủ Tục : CCCD đủ 18 Hoặc giấy tờ tùy thân khác có ảnh (GPLX
@@ -78,11 +79,26 @@ function ProductDetail() {
                   0908.630.065 (a. Hạnh)
                 </span>
               </div>
-            </div>
+            </div> */}
+            <></>
+            {BienSoXeList == false && (
+              <em style={{ color: "red" }}>Không sẵn cho thuê</em>
+            )}
+            {BienSoXeList && (
+              <SelectField
+                items={BienSoXeList}
+                displayName={"bien_so"}
+                name={"bien_so"}
+                value={"bien_so"}
+                label={"Biển số xe"}
+                onChange={chooseBienSoXe}
+              />
+            )}
             <div className="product-action">
-              <button className="add-cart-btn" onClick={addCartItem}>
+              {/* <button className="add-cart-btn" onClick={addCartItem}>
                 Thuê ngay
-              </button>
+              </button> */}
+              <AddCartButton id={id} bienSoXe={chooseBSX} />
               <button className="book-btn">Đặt xe trước</button>
             </div>
             <RentPolicy />
@@ -103,4 +119,4 @@ function ProductDetail() {
   );
 }
 
-export default ProductDetail;
+export default ProductDetailPage;

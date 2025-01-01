@@ -1,3 +1,4 @@
+import ProductService from "@/services/ProductService";
 import Product from "@comps/product/Product";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
@@ -8,8 +9,10 @@ function SearchResult() {
   const [products, setProducts] = useState(null);
   useEffect(() => {
     queryObject.search &&
-      searchXe(queryObject.search).then((result) => {
-        setProducts(result.data);
+      ProductService.searchBike(queryObject.search).then((result) => {
+        console.log(result);
+        if(result)
+        setProducts(result);
       });
   }, []);
   return (
@@ -18,7 +21,7 @@ function SearchResult() {
         <div className="product-list">
           {products &&
             products.map((product) => (
-              <Product key={product.ma_xe} product={product} />
+              <Product key={product.ma_xe} product={product} image={product.url} />
             ))}
           <div className="load-all">
             <button>Xem tất cả</button>
