@@ -4,7 +4,7 @@ import Utils from "@utils/Utils";
 
 function CartContent({cart}) {
   const totalPrice = () =>{
-    let transport_fee = Number(cart.transport_fee.phi_van_chuyen || 0)
+    let transport_fee = Number(cart.transport_fee.phi_giao_xe || 0)
     return transport_fee + cart.total;
   }
     return ( <>
@@ -14,12 +14,13 @@ function CartContent({cart}) {
           <div className="cart-header">
             <div className="cart-item-img">Hình ảnh</div>
             <div className="cart-item-name">Thông tin xe</div>
-            <div className="cart-item-quatity">Số lượng</div>
+            <div className="cart-item-quatity">Biển số</div>
             <div className="cart-item-price">Thành tiền</div>
+            <div className="cart-item-delete"></div>
           </div>
           {cart.items.length > 0 &&
             cart.items.map((motobike) => (
-              <CartItem key={motobike.id} item={motobike} />
+              <CartItem key={motobike.bienSoXe} item={motobike} />
             ))}
           <div className="provisional-value">
             <span>Tạm tính</span>
@@ -27,7 +28,7 @@ function CartContent({cart}) {
           </div>
           <div className="provisional-value">
             <span>Phí vận chuyển</span>
-            <span>{Utils.convertToVND(cart.transport_fee.phi_van_chuyen || 0)}</span>
+            <span>{Utils.convertToVND(cart.transport_fee.phi_giao_xe || 0)}</span>
         </div>
           <div className="total-value">
             <span>Tổng tiền</span>

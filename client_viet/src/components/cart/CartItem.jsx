@@ -1,33 +1,24 @@
-import { addCart, reduceQuantity, addQuantity } from "@/redux/cart/cartSplice";
-import Alert from "@/utils/Alert";
+import delete_cart from "@assets/img/icons-delete.png"
+
+import { changeBienSoXe, removeCart } from "@/redux/cart/cartSplice";
 import { useDispatch } from "react-redux";
 import Utils from "@utils/Utils";
 
 function CartItem({ item }) {
   const dispatch = useDispatch();
-  const getPrice = (money, quantity) => {
-    return Utils.convertToVND(money * quantity);
+  const getPrice = (money) => {
+    return Utils.convertToVND(money);
   };
-  const decrement = () => {
-    if (item.quantity > 1) {
-      dispatch(reduceQuantity({ id: item.id }));
-    }
-  };
-  const increment = () => {
-    if (item.quantity < item.detail?.so_luong) {
-      dispatch(addCart({ id: item.id, quantity: 1 }));
-    } else {
-      Alert.showToast("Sản phẩm không đủ hàng", "info", 1500);
-    }
-  };
-  const updateQuantity = (e) => {
-    let quantity = e.target.value;
-    if (quantity < 0 || quantity > item.detail.so_luong) {
-      Alert.showToast("Số lượng không hợp lệ", "info", 1500);
-      quantity = 1;
-    }
-    dispatch(addQuantity({ id: item.id, quantity }));
-  };
+  const deleteCart = () =>{
+    dispatch(removeCart({id:item.id, bienSoXe: item.bienSoXe}));
+  }
+  const handleChangeBienSoXe = (e) =>{
+    dispatch(changeBienSoXe({
+      id: item.id,
+      bienSoXe: e.target.value,
+      oldBSX: item.bienSoXe
+    }))
+  }
   return (
     <>
       <div className="cart-item">
@@ -42,21 +33,25 @@ function CartItem({ item }) {
         </div>
         <div className="cart-item-quatity">
           <div className="quantity-control">
-            <button onClick={decrement} className="decrement">
-              -
-            </button>
-            <input
-              type="number"
-              value={item.quantity}
-              onChange={updateQuantity}
-            />
-            <button onClick={increment} className="increment">
-              +
-            </button>
+            <select onChange={handleChangeBienSoXe} value={item.bienSoXe} name="bien_so" id="bien_so">
+              {item.detail?.bienSoXes.map(bienSo => (
+                <option key={bienSo.bien_so} value={bienSo.bien_so}>
+                  {bienSo.bien_so}
+                </option>
+              ))}
+            </select>
           </div>
         </div>
         <div className="cart-item-price">
-          <p>{getPrice(item.detail?.gia_thue, item.quantity)}</p>
+          <p>{getPrice(item.detail?.gia_thue)}</p>
+        </div>
+        <div className="cart-item-remove">
+          <button
+            onClick={deleteCart}
+            className="remove"
+          >
+            <img src={delete_cart} alt="" title="Xóa"/>
+          </button>
         </div>
       </div>
     </>

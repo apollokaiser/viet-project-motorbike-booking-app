@@ -56,8 +56,8 @@ function ConfirmOrderButton({ paymentInfo, paymentMethod }) {
         return { ...item, gia_thue: item.detail.gia_thue, detail: null };
       }),
       total: cart.total,
-      transport_fee: cart.transport_fee.phi_van_chuyen,
-      tong_thue: Number(cart.transport_fee.phi_van_chuyen || 0) + cart.total,
+      transport_fee: cart.transport_fee.phi_giao_xe,
+      tong_thue: Number(cart.transport_fee.phi_giao_xe || 0) + cart.total,
       ma_phi: cart.transport_fee.ma_phi,
     };
     const paymentData = {

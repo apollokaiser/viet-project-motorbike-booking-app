@@ -107,7 +107,7 @@ function Payment() {
                 <input
                   placeholder=""
                   type="text"
-                  className="input"
+                  className="form-input"
                   value={paymentInfo.name == "" ? user?.name : paymentInfo.name}
                   onChange={handleChangeInput}
                   name="name"
@@ -119,7 +119,7 @@ function Payment() {
                   required
                   placeholder=""
                   type="text"
-                  className="input"
+                  className="form-input"
                   value={paymentInfo.phone}
                   onChange={handleChangeInput}
                   name="phone"
@@ -151,7 +151,7 @@ function Payment() {
                 required
                 placeholder=""
                 type="text"
-                className={paymentMethod == "OFFLINE" ? "input hide" : "input"}
+                className={paymentMethod == "OFFLINE" ? "form-input hide" : "form-input"}
                 name="street"
                 value={paymentInfo.street}
                 onChange={handleChangeInput}
