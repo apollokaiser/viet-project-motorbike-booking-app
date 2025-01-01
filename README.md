@@ -9,3 +9,5 @@
     <li> ... </li>
 </ul>
 <strong>!!! Thank you !!!</strong>
+<strong>NOTICE</strong>
+<h4>This project has used so much procedure, trigger in MySQL...Please reading CODEME.md before start !! Tks </h4>
