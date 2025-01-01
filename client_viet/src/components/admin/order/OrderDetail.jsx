@@ -4,36 +4,44 @@ import { OrderStatus } from "../context/Context";
 import Utils from "@utils/Utils";
 import OrderService from "@/services/OrderSerivce";
 import Alert from "@utils/Alert";
+import Swal from "sweetalert2";
+import DeliveriedConfimDialog from "./DeliveriedConfimDialog";
 
 function OrderDetail({ id, handle }) {
   const [order, setOrder] = useState({});
   const { formatStatus } = useContext(OrderStatus);
+
   const [thisStatus, setThisStatus] = useState(null);
   useEffect(() => {
-   OrderService.getOrderDetail(id).then((result) => {
+    OrderService.getOrderDetail(id).then((result) => {
       if (result) {
         setOrder(result);
         setThisStatus(formatStatus(result.tinh_trang_thue));
       }
     });
   }, [id]);
-  const updateOrderToDelivered = async () => {
-        const response = await OrderService.changeOrderStatus(id, 3); // 3 là trạng thái đã giao
-        if (response) {
-          Alert.showToast("Đã giao hàng xe thành công.", "success");
-          setOrder((prevOrder) => {
-            return { ...prevOrder, tinh_trang_thue: 3 };
-          });
-          handle(true);
-          setThisStatus(formatStatus(3));
-          return;
-        }
-        Alert.showToast( "Có lỗi xảy ra. Vui lòng thử lại", "error");
-      }
+  const updateOrderToDelivered = async (theChan) => {
+    const response = await OrderService.changeOrderStatus(id, 3, theChan); // 3 là trạng thái đã giao
+    if (response) {
+      Alert.showToast(
+        "Đã giao hàng xe thành công.",
+        "success",
+        3000,
+        document.querySelector(".MuiDialog-root")
+      );
+      setOrder((prevOrder) => {
+        return { ...prevOrder, tinh_trang_thue: 3 };
+      });
+      handle(true);
+      setThisStatus(formatStatus(3));
+      return;
+    }
+    Alert.showToast("Có lỗi xảy ra. Vui lòng thử lại", "error");
+  };
   const updateOrderToFinished = () => {
     //code something
-  }
-  const updateOrderToDeleted =async() =>{
+  };
+  const updateOrderToDeleted = async () => {
     const response = await OrderService.changeOrderStatus(id, 4); // 4 là trạng thái hủy đơn
     if (response) {
       Alert.showToast("Đã hủy thành công.", "success");
@@ -44,8 +52,8 @@ function OrderDetail({ id, handle }) {
       setThisStatus(formatStatus(3));
       return;
     }
-    Alert.showToast( "Có lỗi xảy ra. Vui lòng thử lại", "error");
-  }
+    Alert.showToast("Có lỗi xảy ra. Vui lòng thử lại", "error");
+  };
   const checkStatus = () => {
     return order?.tinh_trang_thue < 2
       ? "un-confirmed"
@@ -61,8 +69,12 @@ function OrderDetail({ id, handle }) {
             <div className="order-product">
               <div className="order-info">
                 <div className="order-status">
-                  <span className="order-date">{Utils.formatDate(order?.ngay_bat_dau_thue)}</span>
-                  <span className="order-date">{Utils.formatDate(order?.ngay_tra)}</span>
+                  <span className="order-date">
+                    {Utils.formatDate(order?.ngay_bat_dau_thue)}
+                  </span>
+                  <span className="order-date">
+                    {Utils.formatDate(order?.ngay_tra)}
+                  </span>
                   <span className="order-identity">{order?.ma_don_dat}</span>
                   {/* <span className="order-payment-method">????</span> */}
                   <span className={"order-status-text " + checkStatus()}>
@@ -79,15 +91,15 @@ function OrderDetail({ id, handle }) {
                   <tbody>
                     {order?.detail &&
                       order.detail.map((item) => (
-                        <tr key={item.ma_xe}>
+                        <tr key={item.bien_so}>
                           <td className="image">
-                            <img src={item.xe.hinhAnhs[0]?.url} alt="motobike" />
+                            <img src={item?.url} alt="motobike" />
                           </td>
                           <td className="title">
-                            <div>{item.xe.ten_xe}</div>
-                            <div>{item.xe.ma_xe}</div>
+                            <div>{item.ten_xe}</div>
+                            <div>{item.ma_xe}</div>
                           </td>
-                          <td className="quantity">{item.so_luong}</td>
+                          <td className="quantity">{item.bien_so}</td>
                           <td className="price">
                             {Utils.convertToVND(item.gia_tien)}
                           </td>
@@ -104,7 +116,7 @@ function OrderDetail({ id, handle }) {
                     </tr>
                     <tr>
                       <td>Vận chuyển</td>
-                      <td>{Utils.convertToVND(order?.phi_van_chuyen)}</td>
+                      <td>{Utils.convertToVND(order?.phi_giao_xe)}</td>
                     </tr>
                     <tr>
                       <td>Tổng thuê</td>
@@ -115,7 +127,7 @@ function OrderDetail({ id, handle }) {
                         <strong>Còn nợ</strong>
                       </td>
                       <td>
-                        { !order?.da_giao_tien
+                        {!order?.da_giao_tien
                           ? Utils.convertToVND(order.tong_thue)
                           : "0đ"}
                       </td>
@@ -123,31 +135,22 @@ function OrderDetail({ id, handle }) {
                   </tbody>
                 </table>
                 {order?.tinh_trang_thue < 3 && (
-                  <div
-                    onClick={updateOrderToDelivered}
-                    className="order-action"
-                  >
-                    <button className="order-deliveried">
-                      Xác nhận giao hàng
-                    </button>
+                  <div className="order-action">
+                    <DeliveriedConfimDialog handle={updateOrderToDelivered} />
                   </div>
                 )}
-                {
-                  order?.tinh_trang_thue == 3 && (
-                    <div
-                      onClick={(e)=> console.log(e)}
-                      className="order-action"
-                    >
-                      <button className="order-finished">
-                        Hoàn thành
-                      </button>
-                    </div>
-                  )
-                }
+                {order?.tinh_trang_thue == 3 && (
+                  <div onClick={(e) => console.log(e)} className="order-action">
+                    <button className="order-finished">Hoàn thành</button>
+                  </div>
+                )}
               </div>
             </div>
             <div className="order-payment-info">
-              <div className="order-payment-method" style={{textDecoration:"line-through"}}>
+              <div
+                className="order-payment-method"
+                style={{ textDecoration: "line-through" }}
+              >
                 <div>
                   <strong>Phương thức thanh toán</strong>
                 </div>
@@ -182,9 +185,6 @@ function OrderDetail({ id, handle }) {
               <div>
                 Địa chỉ người nhận: <span>{order?.dia_chi_nhan}</span>
               </div>
-              {/* <div>
-                Email: <span>thinh.ngohoai@gmail.com</span>
-              </div> */}
             </div>
           </div>
         </div>
