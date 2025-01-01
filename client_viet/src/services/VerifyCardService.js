@@ -27,7 +27,6 @@ export default class VerifyCardService {
             }
             return result.data.errorCode == 0;
         } catch (error) {
-            console.log(error);
             return null;
         }
     }

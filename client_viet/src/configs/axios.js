@@ -5,6 +5,11 @@ const API_KEY = import.meta.env.VITE_FPT_API_KEY;
 
 const webApi = axios.create({
     baseURL: "http://localhost:8080/api/",
+    headers: {
+        "Cache-Control": "no-cache, no-store, must-revalidate",
+        "Pragma": "no-cache",
+        "Expires": "0",
+    }
 })
 const adminApi = axios.create({
     baseURL: "http://localhost:8080/api/admin/",

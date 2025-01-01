@@ -71,9 +71,9 @@ export default class AuthService {
         }
         return null;
     }
-    static setLocalAuth(data) {
-        localStorage.setItem("jwt", data.jwt);
-        localStorage.setItem("refreshToken", data.refreshToken);
+    static setLocalAuth(auth) {
+        localStorage.setItem("jwt", JSON.stringify(auth.jwt));
+        localStorage.setItem("refreshToken", auth.refreshToken);
     }
     static logout() {
         localStorage.removeItem("jwt");

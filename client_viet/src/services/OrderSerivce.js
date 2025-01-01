@@ -19,9 +19,9 @@ export default class OrderService {
             return {};
         }
     }
-    static async changeOrderStatus(order_id, status) {
+    static async changeOrderStatus(order_id, status, the_chan=0) {
         try {
-            const response = await adminApi.get(`/don-hang/change-status?id=${order_id}&status=${status}`);
+            const response = await adminApi.get(`/don-hang/change-status?id=${order_id}&status=${status}&the_chan=${the_chan}`);
             if (response.status === 200)
                 return response.data;
             else throw new Error();
