@@ -4,6 +4,7 @@ import ProductActions from "./ProductActions";
 import Utils from "@utils/Utils";
 import { useSearchParams } from "react-router-dom";
 import ProductService from "@/services/ProductService";
+import LicensePlate from "./LicensePlate";
 
 function ProductTable() {
   const [bikes, setBikes] = useState([]);
@@ -27,7 +28,6 @@ function ProductTable() {
     );
     return sortBikes;
   },[filter,search,sort,bikes]);
-
   const handleDeleteProduct = (id, mode) => {
     if (bikes.length > 0 && mode == 0) {
       setBikes(bikes.filter((bike) => bike.ma_xe !== id));
@@ -54,30 +54,39 @@ function ProductTable() {
       );
     }
   }
+  // code here ...
+  const handleShowLP = (id) =>{
+    setParams(pre=> {
+      const newParams = new URLSearchParams(pre);
+      newParams.set("v_id", id);
+      return newParams;
+    })
+  }
   return (
     <>
       <div className="table-container">
         {/* No Product */}
-        <table className="table" id="data-table">
+        {sortData.length === 0 && <NoProduct />}
+        {
+          sortData.length > 0 && (
+            <table className="table" id="data-table">
           <ProductTableHeader />
           <tbody id="table-body">
-            {sortData.length === 0 && <NoProduct />}
             {sortData.length > 0 &&
               sortData.map((bike) => (
                 <tr
                   style={{
                     background: bike.tinh_trang_xe == 1 ? null : "#a5a5a5",
+                    borderLeft: params.get("v_id") == bike.ma_xe? "10px solid green": ""
                   }}
                   key={bike.ma_xe}
                 >
                   <td>{bike.ma_xe}</td>
-                  <td>{bike.ten_xe}</td>
-                  <td>{bike.bien_so}</td>
+                  <td style={{cursor:"pointer"}} onClick={()=> handleShowLP(bike.ma_xe)}>{bike.ten_xe}</td>
                   <td>{bike.mo_ta}</td>
                   <td>{bike.phan_khoi}</td>
                   <td>{bike.gia_thue}</td>
-                  <td>{bike.so_luong}</td>
-                  <td>{bike.xe_ton_kho}</td>
+                  <td>{bike.co_san}</td>
                   <td>{bike.category.ten_loai}</td>
                   <td>{bike.brand.ten_hang}</td>
                   <td className="actions">
@@ -91,6 +100,12 @@ function ProductTable() {
               ))}
           </tbody>
         </table>
+          )
+        }
+        {
+          (params.get("v_id") && params.get("v_id") !="") && <LicensePlate /> 
+        }
+        
       </div>
     </>
   );
@@ -112,11 +127,6 @@ function ProductTableHeader() {
               <span className="sortable-heading">Tên xe</span>
             </div>
           </th>
-          <th className="sortable" data-id="title">
-            <div className="sortable-wrapper">
-              <span className="sortable-heading">Biển số xe</span>
-            </div>
-          </th>
           <th data-id="description">Description</th>
           <th className="sortable" data-id="vendor">
             <div className="sortable-wrapper">
@@ -130,12 +140,7 @@ function ProductTableHeader() {
           </th>
           <th className="sortable" data-id="buying_price">
             <div className="sortable-wrapper">
-              <span className="sortable-heading">Số lượng</span>
-            </div>
-          </th>
-          <th className="sortable" data-id="sale_price">
-            <div className="sortable-wrapper">
-              <span className="sortable-heading">Tồn kho</span>
+              <span className="sortable-heading">Sẵn có</span>
             </div>
           </th>
           <th className="sortable" data-id="purchase_quantity">

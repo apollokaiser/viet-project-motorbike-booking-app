@@ -2,9 +2,9 @@ function NoProduct() {
   return (
     <>
       <div className="no-products">
-        <p>Looks like you do not have any products.</p>
+        <p style={{fontSize:"25px"}}>Có lẽ như bạn chưa có bất cứ sản phẩm nào</p>
         <a href="#" id="add-dummy-product">
-          Add dummy product?
+          Hãy thêm ngay nào !
         </a>
       </div>
     </>

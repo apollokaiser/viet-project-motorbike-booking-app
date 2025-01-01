@@ -27,6 +27,7 @@ function AddProductDialog() {
                 </button>
               </div>
         <Dialog
+        id="dialog-add-new-vehicle"
           open={open}
           fullScreen
           maxWidth="lg"
@@ -38,7 +39,7 @@ function AddProductDialog() {
             {"Thông tin đơn thuê"}
           </DialogTitle>
           <DialogContent>
-            <AddProductContent />
+            <AddProductContent /> {/* content*/ }
           </DialogContent>
           <DialogActions>
             <Button onClick={handleOpen}>Thoát</Button>

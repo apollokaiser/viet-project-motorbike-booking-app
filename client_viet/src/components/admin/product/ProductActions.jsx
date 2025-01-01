@@ -1,4 +1,5 @@
 import ProductService from "@/services/ProductService";
+import Link from "@comps/Link";
 import { toast } from "@utils/Alert";
 import Swal from "sweetalert2";
 
@@ -85,10 +86,10 @@ function ProductActions({ bike, handleDelete, handleActive }) {
             </a>
           )}
 
-          <a className="editProduct">
+          <Link to={"/admin/product/cap-nhat-xe"} params={{id:bike?.ma_xe}} className="editProduct">
             <span>Sửa</span>
             <i className="fa fa-edit" />
-          </a>
+          </Link>
           <a onClick={() => deleteProduct(0)} className="deleteProduct">
             <span>Xóa</span>
             <i className="fa fa-trash" />

@@ -51,10 +51,9 @@ function ProductContentToolbar() {
               <option value="bien_so">Biển số</option>
               <option value="phan_khoi">Phân khối</option>
               <option value="gia_thue">Giá thuê</option>
-              <option value="so_luong">Số lượng</option>
-              <option value="xe_ton_kho">Tồn kho</option>
-              <option value="loai_xe">Loại xe</option>
-              <option value="hang_xe">Hãng xe</option>
+              <option value="co_san">Sẵn có</option>
+              <option value="ten_loai">Loại xe</option>
+              <option value="ten_hang">Hãng xe</option>
             </select>
           </div>
           <div className="filter-options-wrapper">
