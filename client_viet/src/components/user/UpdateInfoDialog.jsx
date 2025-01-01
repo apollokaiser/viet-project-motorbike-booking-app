@@ -105,7 +105,7 @@ function UpdateInfoDialog({ openModal, toggleOpen }) {
       setUpdateResult(true);
       setTimeout(()=>window.location.reload(),1500);
     } else {
-      Alert.showAlertDialog("Lỗi cập nhật", "Vui lòng thử lại !", "error");
+      // Alert.showAlertDialog("Lỗi cập nhật", "Vui lòng thử lại !", "error");
       setUpdateResult(false);
     }
   };
@@ -120,6 +120,7 @@ function UpdateInfoDialog({ openModal, toggleOpen }) {
         id: idr.id,
         name: idr.name,
       };
+      console.log(CMND);
       setUserInfo((prev) => ({ ...prev, CMND: CMND }));
     }
   };
@@ -135,6 +136,7 @@ function UpdateInfoDialog({ openModal, toggleOpen }) {
         name: dlr.name,
         class: dlr.class,
       };
+      console.log(GPLX);
       setUserInfo((prev) => ({ ...prev, GPLX: GPLX }));
     }
   };
