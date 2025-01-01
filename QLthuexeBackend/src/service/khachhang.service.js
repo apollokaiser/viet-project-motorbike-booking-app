@@ -11,24 +11,13 @@ class KhachHangService {
                 }
             );
             if (result) {
-                return res.status(200).send({
-                    status: 200,
-                    data: result,
-                    message: 'success'
-                });
+                return res.status(200).send(new ResponseBody("OK", result));
             }
 
-            return res.status(200).send({
-                status: 401,
-                message: 'fail'
-            });
+            return res.status(200).send(new ResponseMessage("Not found customer",400));
         }
         catch (err) {
-            console.log("error get all users", err);
-            return res.status(200).send({
-                status: 404,
-                message: 'fail'
-            })
+            return res.status(200).send(new ResponseMessage("Error",400));
         }
     }
     static async getUserInfo(req, res) {
@@ -49,9 +38,8 @@ class KhachHangService {
     static async updateCustomerInfo(req, res) {
         try {
             const { userInfo } = req.body;
-            console.log(userInfo);
+            const user = {};
             if(!userInfo) throw new Error("User not found");
-            let user = {}
             if (userInfo.CMND) {
                 user.CMND = userInfo.CMND.id;
                 user.ho_ten = userInfo.CMND.name;
@@ -61,7 +49,6 @@ class KhachHangService {
                 user.GPLX_type = userInfo.GPLX.class;
             }
             if (userInfo.phone) user.SDT = userInfo.phone;
-            console.log(user);
             const result = await khachHang.update(user,
                 {
                     where: { google_id: req.user.google_id }
@@ -81,7 +68,6 @@ class KhachHangService {
             const refreshToken = utils.createRefreshToken(user);
             return res.status(200).send(new ResponseBody("update successfully", { jwt, refreshToken, user }, 200));
         } catch (err) {
-            console.log(err);
             return res.status(200).send(new ResponseMessage("update failed", 500));
         }
     }

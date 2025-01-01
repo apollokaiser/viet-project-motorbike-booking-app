@@ -2,9 +2,7 @@ import { ResponseMessage, ResponseBody } from "./payload/ResponseMessage.js"
 import thueXe from "../models/thuexe.js";
 import { Op } from "sequelize";
 import { orderStatus } from "../utils/initialize.js";
-import ctThueXe from "../models/chitietthuexe.js";
-import Xe from "../models/xe.js";
-import hinhAnh from "../models/hinhanh.js";
+import { sequelize } from "../models/index.js";
 export default class ThueXeSerivce {
     static async getOrders(req, res) {
         const { page = 1, size = 10, expired, status } = req.query;
@@ -32,11 +30,19 @@ export default class ThueXeSerivce {
         return res.status(200).send(new ResponseBody("Get orders status successfully", orderStatus));
     }
     static async changeOrderStatus(req, res) {
-        const { id, status } = req.query;
+        const { id, status, the_chan } = req.query;
         try {
-            const order = await thueXe.update({
-                tinh_trang_thue: status
-            }, {
+            if (!the_chan && status == 3) {
+                throw new Error("the_chan parameter is required with order status 3");
+            }
+            const orderUpdate = {
+                tinh_trang_thue: status,
+            }
+            if (the_chan && status == 3) {
+                orderUpdate.tien_the_chan = the_chan;
+                orderUpdate.da_giao_tien = true;
+            }
+            const order = await thueXe.update(orderUpdate, {
                 where: {
                     ma_don_dat: id
                 }
@@ -56,26 +62,17 @@ export default class ThueXeSerivce {
             const order = await thueXe.findOne({
                 where: {
                     ma_don_dat: id
-                },
-                include: {
-                    model: ctThueXe,
-                    as: "detail",
-                    include:{
-                        model: Xe,
-                        as: "xe",
-                        include:{
-                            model: hinhAnh,
-                            as: "hinhAnhs",
-                            attributes: ["url"]
-                        },
-                        attributes: ["ma_xe", "ten_xe"]
-                    }
                 }
             })
+            const detail = await sequelize.query("select * from orderdetail where ma_don_dat = :id", {
+                replacements: { id },
+                type: sequelize.QueryTypes.SELECT
+            });
             if (!order) return res.status(200).send(new ResponseMessage("Order not found", 404));
+            order.dataValues.detail = detail;
             return res.status(200).send(new ResponseBody("Get order detail successfully", order));
         } catch (error) {
-            console.log("Error update order status : " + error);
+            console.log("Error update order status : " + error)
             return res.status(200).send(new ResponseMessage(error.message, 400));
         }
     }

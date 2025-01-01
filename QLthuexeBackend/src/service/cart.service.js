@@ -1,36 +1,30 @@
 import hinhAnh from "../models/hinhanh.js";
 import Xe from "../models/xe.js";
+import bienSoXe from "../models/biensoxe.js";
+import { ResponseMessage, ResponseBody } from "../payload/ResponseMessage.js"
 export default class CartService {
 
-    static async getCarts(req,res) {
-        const {carts} = req.body;
+    static async getCarts(req, res) {
+        const { carts } = req.body;
         try {
             const result = await Xe.findAll({
-                where:{
-                    ma_xe:carts,
+                where: {
+                    ma_xe: carts,
                 },
-                attributes:['ma_xe','ten_xe','gia_thue','so_luong'],
-                include:{
-                    model:hinhAnh,
-                    as:'hinhAnhs',
+                attributes: ['ma_xe', 'ten_xe', 'gia_thue'],
+                include: [{
+                    model: hinhAnh,
+                    as: 'hinhAnhs',
                     attributes: ["url"]
-                }
+                },
+                {
+                    model: bienSoXe,
+                    as: 'bienSoXes',
+                }]
             })
-            if(!result) return res.status(201).send({
-                status:404,
-                msg:"No cart found",
-            })
-            res.status(200).send({
-                status:200,
-                msg:'Success',
-                data:result,
-            })
+            res.status(200).send(new ResponseBody("Get cart items successfully", result));
         } catch (error) {
-            console.log("Get cart failed: " + error);
-            return res.status(200).send({
-                status:500,
-                msg:"Error"
-            });
+            return res.status(200).send(new ResponseMessage("Error", 400));
         }
     }
 }

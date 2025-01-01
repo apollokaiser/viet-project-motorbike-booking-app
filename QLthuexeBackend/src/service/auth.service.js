@@ -16,7 +16,7 @@ export async function loginWithGoogle(req, res, next) {
     if (!result) {
         return res.status(400).json({ message: 'Error' });
     }
-    const user = await findOrCreateUser(result);
+    const user = await findOrCreateUser(result)
     const jwt = Utils.createJWT(user[0].dataValues);
     const refreshToken = Utils.createRefreshToken(user);
     res.status(200).send({

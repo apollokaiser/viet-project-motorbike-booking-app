@@ -1,7 +1,7 @@
 import { ResponseBody, ResponseMessage } from "./payload/ResponseMessage.js";
 import { secretKey, vnp_Params as vpnParams } from "../config/vnpay.conf.js";
 import { orderStatus } from "../utils/initialize.js";
-import { Op, literal } from "sequelize";
+import { Op } from "sequelize";
 import Utils from "../utils/utils.js";
 import moment from "moment";
 
@@ -9,7 +9,7 @@ import moment from "moment";
 import ctThueXe from "../models/chitietthuexe.js";
 import { sequelize } from "../models/index.js";
 import thueXe from "../models/thuexe.js";
-import Xe from "../models/xe.js";
+import bienSoXe from "../models/biensoxe.js";
 
 
 
@@ -141,7 +141,7 @@ const createNewOrder = (req, pending = false) => {
         tinh_trang_thue: !pending ? orderStatus.WAITING_CONFIRMATION.id : orderStatus.PENDING_PAYMENT.id,
         da_giao_tien:false,
         tong_tien: orderDetails.total,
-        phi_van_chuyen: orderDetails.transport_fee,
+        phi_giao_xe: orderDetails.transport_fee,
         tong_thue: orderDetails.tong_thue,
         google_id: req.user.google_id,
         ma_phi: orderDetails.ma_phi
@@ -154,8 +154,7 @@ const createNewOrderDetails = (orderDetails, orderId) => {
     return orderDetails.items.map(detail => {
         return {
             ma_don_dat: orderId,
-            ma_xe: detail.id,
-            so_luong: detail.quantity,
+            bien_so: detail.bienSoXe,
             gia_tien: detail.gia_thue,
         }
     })
@@ -165,7 +164,7 @@ const addOrder = async (req, pending = false) => {
     const transaction = await sequelize.transaction();
     try {
         const { orderDetails } = req.body;
-        await checkQuantity(orderDetails);
+        await checkBikeStatus(orderDetails);
         const donThueXe = createNewOrder(req, pending);
         const orderDetailDatas = createNewOrderDetails(orderDetails, donThueXe.ma_don_dat);
         if (orderDetailDatas.length == 0) throw new Error("No order details");
@@ -173,6 +172,13 @@ const addOrder = async (req, pending = false) => {
         const result_insert_detail = await ctThueXe.bulkCreate(orderDetailDatas, { transaction })
         if (!result_insert_detail && !result_insert_order)
             throw new Error("Cannot insert order");
+        bienSoXe.update({
+            dang_thue: true
+        },{
+            where: {
+                bien_so: orderDetails.items.map(detail => detail.bienSoXe)
+            }
+        })
         await transaction.commit();
         return donThueXe;
     } catch (error) {
@@ -185,41 +191,27 @@ const addOrder = async (req, pending = false) => {
  * @param {boolean} update - default true, if update is false, quantity won't update
  * @param {Array} orderDetails - order detail list. If it's not an array or empty, return empty array
  */
-const checkQuantity = async (orderDetails, transaction = null, update = true) => {
+const checkBikeStatus = async (orderDetails) => {
     if (!orderDetails) return [];
-    if (!Array.isArray(orderDetails.items)) return [];
-    if (!transaction) transaction = await sequelize.transaction();
+    // quăng lỗi (nếu có) cho function gọi hàm này bắt lỗi
+    if (!Array.isArray(orderDetails.items)) throw new Error("orderDetails not found");
+    const transaction = await sequelize.transaction();
+    const bienSoXe = JSON.stringify(orderDetails.items.map(detail => detail.bienSoXe)) ;
     try {
-        const result = await Xe.findAll({
-            where: {
-                ma_xe: orderDetails.items.map(item => item.id),
-                so_luong: { [Op.gte]: orderDetails.items.map(item => item.quantity) }
-            },
-            attributes: ['ma_xe', 'so_luong']
-        });
-        if (result.length !== orderDetails.items.length) {
-            throw new Error("Sản phẩm bạn đặt hàng không đủ số lượng");
+        const result = await sequelize.query(`call GetAndUpdateBienSoXe('${bienSoXe}')`, {
+            // replacements: {
+            //     bienSoXes: JSON.stringify(orderDetails.items.map(detail => detail.bienSoXe)) 
+            // },
+            type: sequelize.QueryTypes.RAW
+        })
+        if(result.length == 0 || result.length != orderDetails.items.length) {
+            throw new Error("Some bike status is not available");
         }
-        // update quantity
-        if (!update) {
-            await transaction.commit();
-            return;
-        }
-        for (let item of orderDetails.items) {
-            await Xe.update({
-                so_luong: literal(`so_luong - ${item.quantity}`)
-            },
-                {
-                    where: {
-                        ma_xe: item.id,
-                        so_luong: { [Op.gte]: item.quantity }
-                    },
-                    transaction
-                })
-        }
+        // update dang_thue
         await transaction.commit();
+        return;
     } catch (error) {
-        console.log("Check quantity error :" + error);
+        console.log("Check error :" + error);
         await transaction.rollback();
         throw error;
     }
@@ -234,13 +226,12 @@ const checkRecentOrder = async (googleId) => {
                 google_id: googleId,
                 createdAt: {
                     [Op.gte]: twentyFourHoursAgo,
-                    // tinh_trang_thue: {
-                    //     [Op.notIn]: [orderStatus. WAITING_CONFIRMATION.id]
-                    // }
                 },
+                tinh_trang_thue:{
+                    [Op.notIn]: [orderStatus.RETURNED.id, orderStatus.CANCELLED.id]
+                }
             }
         })
-        console.log(result);
         if (result) {
             throw new Error("Bạn đã đặt hàng trong vòng 24h");
         }
