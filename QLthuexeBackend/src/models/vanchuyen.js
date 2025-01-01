@@ -1,6 +1,7 @@
 import { Sequelize, sequelize } from "./index.js"
+
 const vanChuyen = sequelize.define(
-    "phi_van_chuyen",
+    "phi_giao_xe",
     {
         ma_phi: {
             type: Sequelize.INTEGER,
@@ -13,7 +14,7 @@ const vanChuyen = sequelize.define(
         to: {
             type: Sequelize.INTEGER
         },
-        phi_van_chuyen: {
+        phi_giao_xe: {
             type: Sequelize.DECIMAL(10, 2),
             allowNull:false
         }

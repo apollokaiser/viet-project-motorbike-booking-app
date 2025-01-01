@@ -1,7 +1,6 @@
 import { Sequelize, sequelize } from "./index.js"
 import loaiXe from './loaixe.js';
 import hangXe from './hangxe.js';
-
 const Xe = sequelize.define(
     'xe',
     {
@@ -13,10 +12,6 @@ const Xe = sequelize.define(
             type: Sequelize.STRING(200),
             allowNull:false,
         },
-        bien_so:{
-            type: Sequelize.STRING(15),
-            allowNull:false,
-        },
         tinh_trang_xe: {
             type: Sequelize.TINYINT(1),
             defaultValue: true,
@@ -24,7 +19,6 @@ const Xe = sequelize.define(
         phan_khoi: {
             type: Sequelize.INTEGER,
             allowNull:false
-
         },
         gia_thue: {
             type: Sequelize.DECIMAL(10,2),
@@ -34,14 +28,7 @@ const Xe = sequelize.define(
             type: Sequelize.STRING(1000),
             allowNull:true,
         },
-        so_luong: {
-            type: Sequelize.INTEGER,
-            allowNull:false,
-            validate:{
-                min: 0
-            }
-        },
-        xe_ton_kho: {
+        co_san: {
             type: Sequelize.INTEGER,
             allowNull:false,
             validate:{
@@ -62,8 +49,10 @@ const Xe = sequelize.define(
                 key:'ma_hang',
             },
         }
-    },
-);
+    },{
+        timestamps: false,
+    }
+)
 // loai xe 1-n
 loaiXe.hasMany(Xe, { foreignKey:'ma_loai'});
 Xe.belongsTo(loaiXe,{foreignKey:'ma_loai', as:"category"});

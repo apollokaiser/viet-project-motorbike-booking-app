@@ -31,6 +31,8 @@ const khachHang = sequelize.define(
         GPLX_type:{
             type: Sequelize.STRING(5),
         }
-    },
-);
+    },{
+        timestamps: false,
+    }
+)
 export default khachHang;

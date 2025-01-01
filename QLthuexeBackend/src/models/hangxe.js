@@ -1,5 +1,4 @@
-import { Sequelize,sequelize } from "./index.js"
-
+import { Sequelize, sequelize } from "./index.js"
 
 const hangXe = sequelize.define(
     'hang_xe',
@@ -11,8 +10,10 @@ const hangXe = sequelize.define(
         },
         ten_hang: {
             type: Sequelize.STRING(50),
-            allowNull:false
+            allowNull: false
         },
-    },
-);
+    },{
+        timestamps: false,
+    }
+)
 export default hangXe;

@@ -1,9 +1,8 @@
-import {Sequelize, sequelize } from "./index.js"
+import { Sequelize, sequelize } from "./index.js"
 
 const loaiXe = sequelize.define(
     'loai_xe',
     {
-        // Model attributes are defined here
         ma_loai: {
             type: Sequelize.STRING(15),
             primaryKey: true,
@@ -11,6 +10,8 @@ const loaiXe = sequelize.define(
         ten_loai: {
             type: Sequelize.STRING(15),
         },
-    },
-);
-export default  loaiXe;
+    }, {
+    timestamps: false
+}
+)
+export default loaiXe;

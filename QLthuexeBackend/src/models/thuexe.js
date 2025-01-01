@@ -39,7 +39,7 @@ const thueXe = sequelize.define(
             type: Sequelize.DECIMAL(10, 2),
             allowNull: false,
         },
-        phi_van_chuyen: {
+        phi_giao_xe: {
             type: Sequelize.DECIMAL(10, 2),
             allowNull: false,
         },
@@ -74,8 +74,8 @@ const thueXe = sequelize.define(
             },
         },
 
-    },
-);
+    }
+)
 //thue xe 1-n
 khachHang.hasMany(thueXe, { foreignKey: 'google_id' });
 thueXe.belongsTo(khachHang, { foreignKey: 'google_id' });

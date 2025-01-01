@@ -30,8 +30,10 @@ const thanhToan = sequelize.define(
                 key: 'ma_don_dat',
             },
         }
-    },
-);
+    },{
+        timestamps: false,
+    }
+)
 // thue xe thanh toan 1-1
 thueXe.hasOne(thanhToan, { foreignKey: 'ma_don_dat' });
 thanhToan.belongsTo(thueXe, { foreignKey: 'ma_don_dat' });

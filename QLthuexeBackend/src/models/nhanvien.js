@@ -1,5 +1,4 @@
 import { Sequelize, sequelize } from "./index.js"
-
 const nhanVien = sequelize.define(
     'nhan_vien',
     {
@@ -9,24 +8,26 @@ const nhanVien = sequelize.define(
         },
         ho_ten: {
             type: Sequelize.STRING(100),
-            allowNull:false
+            allowNull: false
         },
         email: {
             type: Sequelize.STRING(30),
             validate: {
-                isEmail: {msg:"Please enter a valid email address"}
+                isEmail: { msg: "Please enter a valid email address" }
             },
-            allowNull:false
+            allowNull: false
 
         },
         mat_khau: {
             type: Sequelize.STRING(30),
-            validate:{
+            validate: {
                 min: 8,
-                max:25
+                max: 25
             },
-            allowNull:false
+            allowNull: false
         }
-    },
-);
+    },{
+        timestamps: false
+    }
+)
 export default nhanVien;

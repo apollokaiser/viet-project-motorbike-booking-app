@@ -1,6 +1,6 @@
 import { Sequelize,sequelize } from "./index.js"
-import Xe from './xe.js';
 import thueXe from './thuexe.js';
+import bienSoXe from "./biensoxe.js";
 
 const ctThueXe = sequelize.define(
     'chi_tiet_thue_xe',
@@ -13,32 +13,26 @@ const ctThueXe = sequelize.define(
                 model: thueXe,
                 key: 'ma_don_dat',
             },
-
         },
-        ma_xe: {
+        bien_so: {
             type: Sequelize.STRING(15),
             primaryKey: true,
             references: {
-                model: Xe,
-                key:'ma_xe',
+                model: bienSoXe,
+                key:'bien_so',
             }
         },
-        so_luong: {
-            type: Sequelize.INTEGER,
-            validate:{
-                min:1
-            },
-            allowNull:false
-        },
         gia_tien: {
-            type: Sequelize.DECIMAL(10,2),
-        },
+            type: Sequelize.DECIMAL(10,2)
+        }
 
-    },
-);
+    }, {
+        timestamps: false,
+    }
+)
 // 1-n
-Xe.hasMany(ctThueXe, { foreignKey: 'ma_xe', as:"detail" });
-ctThueXe.belongsTo(Xe, { foreignKey: 'ma_xe', as:"xe" });
+bienSoXe.hasMany(ctThueXe, { foreignKey: 'bien_so', as:"ctiet"});
+ctThueXe.belongsTo(bienSoXe, { foreignKey: 'bien_so', as:"xe" });
 //1-n
 thueXe.hasMany(ctThueXe, { foreignKey: 'ma_don_dat', as:"detail" });
 ctThueXe.belongsTo(thueXe, { foreignKey: 'ma_don_dat', as:"order" })

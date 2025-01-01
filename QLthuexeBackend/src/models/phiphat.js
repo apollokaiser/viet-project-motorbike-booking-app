@@ -34,8 +34,10 @@ const phiPhat = sequelize.define(
         
         },
         
-    },
-);
+    },{
+        timestamps: false,
+    }
+)
 
 //1-1
 thueXe.hasOne(phiPhat, { foreignKey: 'ma_don_dat', as:"phat" });
