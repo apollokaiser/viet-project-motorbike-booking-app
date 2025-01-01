@@ -39,8 +39,8 @@ BEGIN
     SELECT COUNT(*) INTO total FROM bien_so_xes;
     -- Tính số xe đang không hoạt động
     SELECT COUNT(*) INTO unabled FROM bien_so_xes WHERE bien_so_xes.tinh_trang = 0;
-    -- Tính số xe đang cho thuê (= tổng số xe - số xe không hoạt động - phần còn trong kho)
-    SET dang_thue = total - unabled - con_lai;
+    -- Tính số xe đang cho thuê (= tổng số xe - phần còn trong kho)
+    SET dang_thue = total - con_lai;
 
     -- Xuất kết quả: tổng số xe và số lượng xe đã cho thuê
     SELECT total, dang_thue AS rented, con_lai AS stock, unabled;
@@ -51,10 +51,7 @@ DELIMITER ;
 -- -----------------------------------------------------------------------------------
 
 DELIMITER $$
-
-CREATE PROCEDURE GetAndUpdateBienSoXe(
-    IN bien_sos JSON
-)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `GetAndUpdateBienSoXe`(IN `bien_sos` JSON)
 BEGIN
     DECLARE errorMessage VARCHAR(255);
     
@@ -63,21 +60,20 @@ BEGIN
         SELECT 1
         FROM bien_so_xes
         WHERE bien_so IN (
-            SELECT CAST(bien_xe_json.value AS CHAR)  -- Sử dụng CHAR thay vì VARCHAR(15)
-            FROM JSON_TABLE(bien_sos, '$[*]' COLUMNS(value JSON PATH '$')) AS bien_xe_json
+            SELECT CAST(bien_xe_json.value AS CHAR) 
+            FROM JSON_TABLE(bien_sos, '$[*]' COLUMNS(value VARCHAR(255) PATH '$')) AS bien_xe_json
         )
         AND dang_thue = 1
     ) THEN
         SET errorMessage = 'Có sản phẩm đang trong trạng thái "đang thuê".';
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = errorMessage;
     END IF;
-
     -- Lấy danh sách sản phẩm
-    SELECT bien_so
+    SELECT bien_so AS bien_so
     FROM bien_so_xes
     WHERE bien_so IN (
         SELECT CAST(bien_xe_json.value AS CHAR)  -- Sử dụng CHAR thay vì VARCHAR(15)
-        FROM JSON_TABLE(bien_sos, '$[*]' COLUMNS(value JSON PATH '$')) AS bien_xe_json
+        FROM JSON_TABLE(bien_sos, '$[*]' COLUMNS(value VARCHAR(255) PATH '$')) AS bien_xe_json
     );
 
     -- Cập nhật trạng thái của các sản phẩm được chọn thành "đang thuê"
@@ -85,10 +81,9 @@ BEGIN
     SET dang_thue = 1
     WHERE bien_so IN (
         SELECT CAST(bien_xe_json.value AS CHAR)  -- Sử dụng CHAR thay vì VARCHAR(15)
-        FROM JSON_TABLE(bien_sos, '$[*]' COLUMNS(value JSON PATH '$')) AS bien_xe_json
+        FROM JSON_TABLE(bien_sos, '$[*]' COLUMNS(value VARCHAR(255) PATH '$')) AS bien_xe_json
     );
 END$$
-
 DELIMITER ;
 -- ---------------------------------------------------------------------------------
 
@@ -108,6 +103,88 @@ CREATE TRIGGER `CHECK_STATUS_ORDER_BEFORE_CHANGE` BEFORE UPDATE ON `thue_xes`
     SET MESSAGE_TEXT = 'Cannot update';
 END IF;
 END$$
+DELIMITER ;
+-- -------------------------------------------------------------------------------
+DELIMITER $$
+
+CREATE TRIGGER TRIG_CHECK_DELETE_BIEN_SO_XE
+BEFORE DELETE ON bien_so_xes
+FOR EACH ROW
+BEGIN
+    if EXISTS(SELECT 1 FROM chi_tiet_thue_xes ct WHERE ct.bien_so = OLD.bien_so) THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Không thể xóa vì có đơn thuê';
+    END IF;
+    
+END$$
+
+DELIMITER //
+-- -----------------------------------------------------------------------
+DELIMITER $$
+
+CREATE TRIGGER TRIG_CHECK_DELETE_XE
+BEFORE DELETE ON xes
+FOR EACH ROW
+BEGIN
+    if EXISTS(SELECT 1 FROM bien_so_xes bsx JOIN chi_tiet_thue_xes ct ON bsx.bien_so = ct.bien_so  WHERE bsx.ma_xe = OLD.ma_xe) THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Your custom error message';
+    END IF;
+    
+END$$
+
+DELIMITER //
+-- ----------------------------------------------------------------
+DELIMITER $$
+
+CREATE TRIGGER DELETE_LOAI_XE
+BEFORE DELETE ON loai_xes
+FOR EACH ROW
+BEGIN
+	IF EXISTS( SELECT 1 FROM xes WHERE xes.ma_loai = OLD.ma_loai) THEN
+    	 SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Không thể xóa vì có xe';
+    END IF;
+END$$
+
+DELIMITER //
+-- -----------------------------------------------------------------------
+DELIMITER $$
+
+CREATE TRIGGER DELETE_HANG_XE
+BEFORE DELETE ON hang_xes
+FOR EACH ROW
+BEGIN
+	IF EXISTS( SELECT 1 FROM xes WHERE xes.ma_hang = OLD.ma_hang) THEN
+    	 SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Không thể xóa hãng vì có xe';
+    END IF;
+END$$
+
+DELIMITER //
+-- -----------------------------------------------------------------
+DELIMITER //
+
+CREATE PROCEDURE CapNhatTrangThai(
+    IN bien_sos JSON
+)
+BEGIN
+    -- Cập nhật trạng thái `dang_thue` trong bảng `bien_so_xe`
+    UPDATE bien_so_xes bsx
+    SET bsx.dang_thue = 1
+    WHERE bsx.bien_so IN (
+            SELECT CAST(bien_xe_json.value AS CHAR) 
+            FROM JSON_TABLE(bien_sos, '$[*]' COLUMNS(value VARCHAR(255) PATH '$')) AS bien_xe_json
+        );
+    -- Cập nhật lại số lượng `co_san` trong bảng `xe`
+    UPDATE xes
+    SET co_san = (
+        SELECT COUNT(*)
+        FROM bien_so_xes
+        WHERE bien_so_xes.ma_xe = xes.ma_xe AND bien_so_xes.dang_thue = 0
+    );
+END //
+
 DELIMITER ;
 </code>
 </pre>
