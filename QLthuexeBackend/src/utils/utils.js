@@ -3,6 +3,7 @@ import QueryString from "qs";
 import crypto from "crypto";
 const secretKey = "ce851b9793332b8bfb999ce5338dfe75270e769639eea987b99e63c5325239ef";
 const secretRefreshToken = "myappsecret";
+import { v4 as uuidv4 } from 'uuid';
 
 class Utils {
     static createJWT(user) {
@@ -10,7 +11,7 @@ class Utils {
             ...user
         },
             secretKey,
-            { expiresIn: '1h', algorithm:'HS256' });
+            { expiresIn: '1h', algorithm: 'HS256' });
     }
     /**
      * 
@@ -47,8 +48,9 @@ class Utils {
     }
     static createMaXe(loaiXe) {
         if (!loaiXe) return null;
+        const id = uuidv4().split('-');
         const date = new Date().getTime() + Math.floor(Math.random() * 100);
-        return loaiXe + date;
+        return loaiXe + id;
     }
     static createMaThueXe(paymentMethod) {
         if (!paymentMethod) return null;
@@ -92,17 +94,24 @@ class Utils {
         vnp_Params = this.sortObject(vnp_Params);
         let signData = QueryString.stringify(vnp_Params, { encode: false });
         let hmac = crypto.createHmac("sha512", secretKey);
-        let signed = hmac.update( Buffer.from(signData, 'utf-8')).digest("hex");
+        let signed = hmac.update(Buffer.from(signData, 'utf-8')).digest("hex");
         return signed;
     }
     static formatUTF8(str) {
         return str.trim().toLowerCase()
-          .normalize("NFD")
-          .replace(/[\u0300-\u036f]/g, "") 
-          .replace(/đ/g, "d") 
-          .replace(/Đ/g, "D") 
-          .replace(" ", "_")
-      }
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "")
+            .replace(/đ/g, "d")
+            .replace(/Đ/g, "D")
+            .replace(" ", "_")
+    }
+    static NoEmpty(obj) {
+        if (obj == null || obj == undefined || obj.trim() == "") throw new Error("Cannot empty");
+    }
+    static createSecrect(publicId, timestamp, apiSecret) {
+        const stringToSign = `public_id=${publicId}&timestamp=${timestamp}${apiSecret}`;
+        return crypto.createHash('sha256').update(stringToSign).digest('hex');
+    }
 }
 
 

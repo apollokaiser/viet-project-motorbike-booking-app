@@ -30,22 +30,22 @@ const phiVanChuyenData = [
     {
         from: 0,
         to: 1,
-        phi_van_chuyen: 0
+        phi_giao_xe: 0
     },
     {
         from: 1,
         to: 5,
-        phi_van_chuyen: 20000
+        phi_giao_xe: 20000
     }
     ,{
         from: 5,
         to: 10,
-        phi_van_chuyen: 30000
+        phi_giao_xe: 30000
     },
     {
         from: 10,
         to: 999,
-        phi_van_chuyen: 40000
+        phi_giao_xe: 40000
     }
 ]
 const admin = {
@@ -60,6 +60,7 @@ export const addLoaiXes = async () => {
         const count = await loaiXe.count();
         if (count == 0) {
             loaiXe.bulkCreate(categoriesData);
+            
         }
     } catch (error) {
         console.log("Initialize - CATEGORY failed: " + error);
@@ -69,7 +70,7 @@ export const addHangXes = async () => {
     try {
         const count = await hangXe.count();
         if (count == 0) {
-            hangXe.create(brandsData);
+            hangXe.bulkCreate(brandsData);
         }
     } catch (error) {
         console.log("Initialize - BRAND failed: " + error)
