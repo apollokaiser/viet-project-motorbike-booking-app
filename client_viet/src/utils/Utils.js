@@ -59,11 +59,30 @@ export default class Utils {
             return null;
         }
     }
+    /**
+     * 
+     * @param {Long} date - seconds since January 1, 1970 (UNIX timestamp)
+     * @returns A date : "DD/MM/YYYY"
+     */
     static formatDate(date) {
+        if(!date) return null;
         const d = new Date(date * 1000);
         const month = d.toLocaleString("default", { month: "numeric" });
         const day = d.getDate();
         const year = d.getFullYear();
-        return `${day}/ ${month}/ ${year}`;
+        return `${day}/${month}/${year}`;
     };
+    static checkExpires(expires, difference = 24 * 60 * 60) {
+        const currentTime = new Date().getTime() / 1000;
+        const expiresTime = currentTime - expires;
+        if (expiresTime <= 0 || expiresTime <= difference) return 0;
+        const overdueHours = expiresTime / (60 * 60);
+        return {
+            expired: true,
+            time: overdueHours.toFixed(0),
+        }
+    }
+    static differenceHourDate(start, end) {
+        return (end - start) / (24 * 60 * 60);
+    }
 }

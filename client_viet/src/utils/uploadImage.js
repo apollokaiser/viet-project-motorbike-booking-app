@@ -3,11 +3,11 @@ import axios from "axios";
 const UPLOAD_ENDPOINT = import.meta.env.VITE_UPLOAD_ENDPOINT;
 const CLOUD_NAME = import.meta.env.VITE_CLOUD_NAME;
 /**
- * 
  * @param {file} image Hình ảnh cần tải lên
  * @param {string} uploadPreset cấu hình tải ảnh của bạn
  * @returns {string} secureUrl đường dẫn (url) cho ảnh
  */
+//FIXME: Nên đưa xuống server để xử lý (đang thử nghiệm trên frontend)
 async function uploadImages(image, uploadPreset=null){
     if(!image) return null;
     const url = `${UPLOAD_ENDPOINT}/${CLOUD_NAME}/upload`
