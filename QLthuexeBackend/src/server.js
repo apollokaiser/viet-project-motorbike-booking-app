@@ -13,17 +13,20 @@ configViewEngine(app);
 corsConfig(app);
 routes(app);
 
-//sequelize
+// //sequelize
 sequelize.sync({ alter: true })
   .then(() => {
     console.log('Cơ sở dữ liệu đã được đồng bộ hóa');
-    initialize.addLoaiXes();
-    initialize.addHangXes();
-    initialize.addPhiVanChuyen();
-    initialize.addAdminAccount();
+    // initialize.addLoaiXes();
+    // initialize.addHangXes();
+    // initialize.addPhiVanChuyen();
+    // initialize.addAdminAccount();
+    // initialize.addPhiPhat();
+    // initialize.addPTThanhtoan();
+    // initialize.addOrderStatus();
   })
   .catch((err) => {
-    console.error('Lỗi đồng bộ hóa cơ sở dữ liệu:', err);
+    console.error('Lỗi đồng bộ hóa cơ sở dữ liệu:', err.message);
   });
 
 

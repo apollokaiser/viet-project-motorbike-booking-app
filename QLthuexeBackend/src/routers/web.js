@@ -12,7 +12,7 @@ import AdminRouter from "../controller/Admin.controller.js";
 import ThueXeRouter from "../controller/ThueXe.controller.js";
 
 import HangXeRouter from "../controller/HangXe.controller.js";
-import { ResponseMessage } from "../service/payload/ResponseMessage.js";
+import { ResponseMessage } from "../payload/ResponseMessage.js";
 
 const routes = (app) => {
     app.use('/api/auth', authRouter)

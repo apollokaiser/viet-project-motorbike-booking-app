@@ -1,4 +1,4 @@
-import { ResponseMessage } from "./ResponseMessage";
+import { ResponseMessage } from "./ResponseMessage.js";
 
 export default class Exception {
     constructor(message, code = 400) {
@@ -14,7 +14,7 @@ export default class Exception {
      */
     static sendError(error, defaultMessage = "error", statusCode = 400) {
         if (error instanceof Exception) {
-            return new ResponseMessage((error.message, error.code));
+            return new ResponseMessage(error.message, error.code);
         }
         return new ResponseMessage(defaultMessage, statusCode);
     }
