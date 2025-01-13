@@ -152,4 +152,12 @@ export default class ProductService {
         }
         
     }
+    static getBikeList = async(keyword) =>{
+        try {
+            const response = await axios.get(`/xe/danh-sach-xe?list=${keyword}`)
+            return response.data.status === 200? response.data.data : null;
+        } catch (error) {
+            return null;
+        }
+    }
 }
