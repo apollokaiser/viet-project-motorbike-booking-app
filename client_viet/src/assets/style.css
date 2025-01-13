@@ -35,6 +35,14 @@
   .cur-pointer {
     cursor: pointer;
   }
+  nav a.active {
+    color: #84005c !important;
+    padding: 5px;
+    transition: all .3s linear;
+  }
+  nav a.active:hover {
+    text-decoration: underline !important;
+  }
   /*css for text field*/
   .input {
     border: 2px solid transparent;
@@ -288,6 +296,11 @@
   .nav-item.collapse {
     position: relative;
   }
+  .nav-item.collapse>a {
+    display: block;
+    height: 100%;
+    width: 100%;
+  }
   .collapse::after {
     content: "";
     position: absolute;
@@ -295,7 +308,7 @@
     left: 0;
     width: 100%;
     height: 22px;
-    z-index: 99;
+    z-index: 1001;
   }
   .nav-item.collapse:hover .dropdown-menu {
     display: block !important;
@@ -341,6 +354,14 @@
   }
   .dropdown-menu > .nav-item::before {
     border-right: initial !important;
+  }
+  .dropdown-menu>.nav-item {
+    display: flex;
+    justify-content: center !important;
+    transition: 0.3s ease;
+  }
+  .dropdown-menu>.nav-item:hover {
+  background-color: #eee;
   }
   .main-content,
   .iframe-video {
