@@ -38,7 +38,8 @@ export default [
       'react/prop-types':'off',
       'no-empty':'off',
       'no-undef':'off',
-      'react-hooks/exhaustive-deps':'off'
+      'react-hooks/exhaustive-deps':'off',
+      'no-useless-escape':'off',
     },
   },
 ]
