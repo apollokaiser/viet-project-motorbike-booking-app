@@ -1,6 +1,6 @@
 
 import khachHang from "../models/khachhang.js";
-import { ResponseBody, ResponseMessage } from "./payload/ResponseMessage.js"
+import { ResponseBody, ResponseMessage } from "../payload/ResponseMessage.js";
 import utils from "../utils/utils.js";
 class KhachHangService {
     static async getALLKhachhang(req, res) {

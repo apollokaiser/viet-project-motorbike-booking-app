@@ -11,7 +11,7 @@ export default class CartService {
                 where: {
                     ma_xe: carts,
                 },
-                attributes: ['ma_xe', 'ten_xe', 'gia_thue'],
+                attributes: ['ma_xe', 'ten_xe', 'gia_thue',"co_san","the_chan"],
                 include: [{
                     model: hinhAnh,
                     as: 'hinhAnhs',

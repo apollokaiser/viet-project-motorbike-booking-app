@@ -74,6 +74,35 @@ class XeService {
             return res.status(200).send(new ResponseMessage("error", 400));
         }
     }
+    static async getVehicleList(req, res) {
+        try {
+            const { list } = req.query;
+            let table = "";
+            switch (list) {
+                case "newest":
+                    table = "new_vehicle";
+                    break;
+                case "all":
+                    table = "xes";
+                    break;
+                case "best-rent":
+                    table = "most_rented_vehicle";
+                    break;
+                default:
+                    return res.status(200).send(new ResponseMessage("Invalid list parameter", 400));
+            }
+            const vehicles = await sequelize.query("select * from :vehicle_table", {
+                replacements: { vehicle_table: table },
+                type: sequelize.QueryTypes.RAW
+            });
+            if (!vehicles) {
+                return res.status(200).send(new ResponseMessage("Get vehicles failed", 404));
+            }
+            return res.status(200).send(new ResponseBody("Get vehicles successfully", vehicles));
+        } catch (error) {
+            return res.status(200).send(new ResponseMessage("error", 400));
+        }
+    }
     static async getAllBienSoXeByXeId(req, res) {
         try {
             const { id } = req.query;
@@ -131,42 +160,41 @@ class XeService {
                     co_san: bienSoXes.length,
                     ma_loai: bike["Danh mục"],  // ID của loại xe
                     ma_hang: bike["Hãng"],   // ID của hãng xe
+                    the_chan: bike["Thế chân"],
                     bienSoXes,
                     hinhAnhs
                 }
             })
             const hinhAnhs = bikesData.flatMap(bike => bike.hinhAnhs)
             const bienSoXes = bikesData.flatMap(bike => bike.bienSoXes);
-            await Xe.bulkCreate(bikesData, {
-                transaction: transaction,
-            })
+            await Xe.bulkCreate(bikesData, { transaction })
             await hinhAnh.bulkCreate(hinhAnhs, {
                 validate: true,
                 ignoreDuplicates: true,
                 transaction: transaction
             })
-            await XeService.addBienSoXeList(bienSoXes);
+            await XeService.addBienSoXeList(bienSoXes, transaction);
             await transaction.commit();
             return res.status(200).send(new ResponseMessage("Thêm xe thành công", 200));
         } catch (error) {
+            console.log(error);
             await transaction.rollback();
             return res.status(200).send(Exception.sendError(error, "Không thể thêm xe"));
         }
     }
-    static async addBienSoXeList(bienSoXes) {
-        try {
-            await bienSoXe.bulkCreate(bienSoXes, {
-                transaction: transaction
-            });
+    static async addBienSoXeList(bienSoXes, transaction) {
+        const result = await bienSoXe.bulkCreate(bienSoXes, {
+            transaction: transaction
+        });
+        if (result) {
             return true;
-        } catch (error) {
-            throw new Exception("Không thể thêm do bị trùng biển số xe");
         }
+        throw new Exception("Không thể thêm do bị trùng biển số xe");
     }
     static async addBienSoXe(req, res) {
+        const transaction = await sequelize.transaction();
         try {
             const { bienSo } = req.body;
-            const transaction = await sequelize.transaction();
             if (!bienSo) throw new Exception("Dữ liệu bị gián đoạn ! Thử lại");
             const existed = await bienSoXe.findOne({
                 where: { bien_so: bienSo.bien_so }
@@ -174,18 +202,21 @@ class XeService {
             if (existed) {
                 throw new Exception(`Biển số xe ${bienSo.bien_so} đã tồn tại`);
             }
-            const result = await bienSoXe.create(bienSo);
+            const result = await bienSoXe.create(bienSo, {
+                transaction: transaction
+            });
             Xe.update({
                 co_san: literal(`co_san + 1`)
             }, {
-                where: { ma_xe: bienSo.ma_xe }
+                where: { ma_xe: bienSo.ma_xe },
+                transaction: transaction
             })
             if (!result) throw new Exception("couldn't create new bien so xe");
             await transaction.commit();
             return res.status(200).send(new ResponseMessage("Thêm biển số xe thành công", 200));
         } catch (error) {
             await transaction.rollback();
-           return res.status(200).send(Exception.sendError(error, "Không thể thêm"));
+            return res.status(200).send(Exception.sendError(error, "Không thể thêm"));
         }
     }
     static async searchXe(req, res) {
@@ -220,23 +251,30 @@ class XeService {
         }
     }
     static async deleteBienSoXe(req, res) {
+        const transaction = sequelize.transaction()
         try {
             const { id, mode, ma_xe } = req.query;
             if (!id) throw new Error("Invalid params");
             if (mode == 1) return await XeService.disableBienSoXe(req, res);
             const result = await bienSoXe.destroy({
-                where: { bien_so: id }
+                where: { bien_so: id },
+                transaction: transaction
             });
             Xe.update({
                 co_san: literal(`co_san - 1`)
             }, {
-                where: { ma_xe: ma_xe }
+                where: { ma_xe: ma_xe },
+                transaction: transaction
             })
-            if (!result)
+            if (!result) {
+                await transaction.rollback();
                 return res.status(200).send(new ResponseMessage("No bike found", 404));
+            }
+            await transaction.commit();
             return res.status(200).send(new ResponseMessage("Delete bike successfully", 200));
         } catch (error) {
             console.log(error);
+            await transaction.rollback();
             return res.status(200).send(new ResponseMessage("error", 400));
         }
     }
@@ -318,24 +356,28 @@ class XeService {
         }
     }
     static async activeBienSoXe(req, res) {
+        const transaction = sequelize.transaction();
         try {
             const { id, ma_xe } = req.query;
             const result = await bienSoXe.update({
                 tinh_trang: true,
             }, {
-                where: { bien_so: id }
+                where: { bien_so: id }, transaction
             })
             Xe.update({
                 co_san: literal(`co_san + 1`)
             }, {
-                where: { ma_xe: ma_xe }
+                where: { ma_xe: ma_xe }, transaction
             })
             if (!result) {
+                await transaction.rollback();
                 return res.status(200).send(new ResponseMessage("Cannot active bike", 404));
             }
+            await transaction.commit();
             return res.status(200).send(new ResponseMessage("Active bike successfully", 200));
         } catch (error) {
             console.log(error);
+            await transaction.rollback();
             return res.status(200).send(new ResponseMessage("error", 400));
         }
     }
@@ -364,10 +406,11 @@ class XeService {
                 })
                 CloudinaryService.deleteImgs(bike.deleteImg); // not use await here
             }
-            await transaction.commit();
             if (!result) {
+                await transaction.rollback();
                 return res.status(200).send(new ResponseMessage("update failed", 400));
             }
+            await transaction.commit();
             return res.status(200).send(new ResponseMessage("update successfully", 200));
         } catch (error) {
             await transaction.rollback();

@@ -3,7 +3,7 @@ import khachHang from "../models/khachhang.js"
 import nhanVien from "../models/nhanvien.js"
 import Utils from '../utils/utils.js';
 import 'dotenv/config'
-import { ResponseBody, ResponseMessage } from './payload/ResponseMessage.js';
+import { ResponseBody, ResponseMessage } from '../payload/ResponseMessage.js';
 
 
 export async function loginWithGoogle(req, res, next) {
