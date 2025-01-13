@@ -1,5 +1,5 @@
 import { NavLink } from "react-router-dom";
-function Link({ to, params, className, children}) {
+function Link({ to, params, className, children, notActive, activeClass }) {
   let url = params ? `${to}?${new URLSearchParams(params).toString()}` : to;
   return (
     <>
@@ -8,7 +8,12 @@ function Link({ to, params, className, children}) {
           {children}
         </a>
       ) : (
-        <NavLink className={className} to={url}>
+        <NavLink
+          className={({ isActive }) =>
+            isActive && activeClass && !notActive ? `${className} ${activeClass}` : className
+          }
+          to={url}
+        >
           {children}
         </NavLink>
       )}
