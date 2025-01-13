@@ -1,4 +1,4 @@
-import GoogleAuthButton from "@comps/auth/GoogleAuthButton";
+import GoogleAuthButton from "@/features/web/auth/GoogleAuthButton";
 import Link from "@comps/Link";
 function Navbar() {
     return (
@@ -11,15 +11,15 @@ function Navbar() {
                     <li className="nav-item">
                         <Link  to={"/gioi-thieu"}>Giới thiệu</Link>{" "}
                     </li>
-                    <li className="nav-item collapse">
-                        <Link to={"/danh-sach-xe"} params={{check:'all'}}>Danh sách cho thuê xe</Link>
+                    <li className="nav-item collapse show">
+                        <Link to={"/danh-sach-xe"} params={{list:'all'}}>Danh sách cho thuê xe</Link>
                         <ul className="dropdown-menu">
                             {/*TODO: a bao bên ngoài li*/}
                             <li className="nav-item">
-                                <Link to={"/danh-sach-xe"} params={{check:'all', product:'newest'}}>Danh sách xe mới</Link>
+                                <Link to={"/danh-sach-xe"} params={{list:'newest'}}>Danh sách xe mới</Link>
                             </li>
                             <li className="nav-item">
-                                <Link to={"/danh-sach-xe"} params={{check:'all',order:'asc'}} >Danh sách xe bán chạy</Link>
+                                <Link to={"/danh-sach-xe"} params={{list:'best-rent'}} >Danh sách xe bán chạy</Link>
                             </li>
                         </ul>
                     </li>

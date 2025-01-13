@@ -1,7 +1,7 @@
 import logo_header from "@assets/img/logo-head-chuan-2005.png";
 import title_header from "@assets/img/titlechothuexemaysaigon-1062.png";
-import Search from "@comps/search/Search";
-import CartIcon from "@comps/cart/CartIcon";
+import Search from "@/features/web/search/components/Search";
+import CartIcon from "@/features/web/cart/components/CartIcon";
 function SiteInfo() {
   return (
     <>
