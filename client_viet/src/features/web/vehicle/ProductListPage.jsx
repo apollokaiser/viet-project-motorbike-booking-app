@@ -1,0 +1,38 @@
+import ProductService from "@/services/ProductService";
+import Product from "@/features/web/vehicle/components/Product";
+import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
+
+function ProductListPage() {
+  const [params, setParams] = useSearchParams();
+  const list = params.get("list");
+  const [products, setProducts] = useState(null);
+  useEffect(() => {
+    queryObject.search &&
+      ProductService.getBikeList(list).then((result) => {
+        console.log(result);
+        if (result) setProducts(result);
+      });
+  }, []);
+  return (
+    <>
+      <div className="fade-in main-content">
+        <div className="product-list">
+          {products &&
+            products.map((product) => (
+              <Product
+                key={product.ma_xe}
+                product={product}
+                image={product.url}
+              />
+            ))}
+          <div className="load-all">
+            <button>Xem tất cả</button>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+}
+
+export default ProductListPage;
