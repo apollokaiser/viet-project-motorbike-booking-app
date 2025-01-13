@@ -9,5 +9,7 @@
     <li> ... </li>
 </ul>
 <strong>!!! Thank you !!!</strong>
-<strong>NOTICE</strong>
-<h4>This project has used so much procedure, trigger in MySQL...Please reading CODEME.md before start !! Tks </h4>
+
+###  :fa-exclamation-triangle: NOTICE
+- All date type are UNIX timestamp (s). So, all date method that i've defined only and only support for UNIX timestamp !!!!!!
+- This project had used so many procedure, trigger ... Please reading CODEME.md before starting. One more time, ***Thank youuuu !***
