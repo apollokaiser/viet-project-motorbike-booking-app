@@ -48,8 +48,7 @@ class Utils {
     }
     static createMaXe(loaiXe) {
         if (!loaiXe) return null;
-        const id = uuidv4().split('-');
-        const date = new Date().getTime() + Math.floor(Math.random() * 100);
+        const id = uuidv4().split('-')[0].toUpperCase();
         return loaiXe + id;
     }
     static createMaThueXe(paymentMethod) {
