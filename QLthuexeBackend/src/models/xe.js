@@ -8,9 +8,9 @@ const Xe = sequelize.define(
             type: Sequelize.STRING(20),
             primaryKey: true,
         },
-        ten_xe:{
+        ten_xe: {
             type: Sequelize.STRING(200),
-            allowNull:false,
+            allowNull: false,
         },
         tinh_trang_xe: {
             type: Sequelize.TINYINT(1),
@@ -18,47 +18,53 @@ const Xe = sequelize.define(
         },
         phan_khoi: {
             type: Sequelize.INTEGER,
-            allowNull:false
+            allowNull: false
         },
         gia_thue: {
-            type: Sequelize.DECIMAL(10,2),
-            allowNull:false
+            type: Sequelize.DECIMAL(10, 2),
+            allowNull: false
         },
         mo_ta: {
             type: Sequelize.STRING(1000),
-            allowNull:true,
+            allowNull: true,
         },
         co_san: {
             type: Sequelize.INTEGER,
-            allowNull:false,
-            validate:{
+            allowNull: false,
+            validate: {
                 min: 0
             }
         },
-        ma_loai:{
+        the_chan: {
+            type: Sequelize.DECIMAL(10, 2),
+            allowNull: false
+        },
+        ma_loai: {
             type: Sequelize.STRING(15),
             references: {
                 model: loaiXe,
                 key: 'ma_loai',
             },
         },
-        ma_hang:{
+        ma_hang: {
             type: Sequelize.STRING(15),
             references: {
                 model: hangXe,
-                key:'ma_hang',
+                key: 'ma_hang',
             },
         }
-    },{
-        timestamps: false,
+    },
+    {
+        createdAt:true,
+        updatedAt: false,
     }
 )
 // loai xe 1-n
-loaiXe.hasMany(Xe, { foreignKey:'ma_loai'});
-Xe.belongsTo(loaiXe,{foreignKey:'ma_loai', as:"category"});
+loaiXe.hasMany(Xe, { foreignKey: 'ma_loai' });
+Xe.belongsTo(loaiXe, { foreignKey: 'ma_loai', as: "category" });
 //hang xe 1-n
-hangXe.hasMany(Xe,{foreignKey:'ma_hang'});
-Xe.belongsTo(hangXe,{foreignKey:'ma_hang', as: "brand"});
+hangXe.hasMany(Xe, { foreignKey: 'ma_hang' });
+Xe.belongsTo(hangXe, { foreignKey: 'ma_hang', as: "brand" });
 
 export default Xe;
 

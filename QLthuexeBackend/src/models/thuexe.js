@@ -1,5 +1,7 @@
 import { Sequelize, sequelize } from "./index.js"
 import khachHang from './khachhang.js';
+import phuongThucThanhToan from "./phuongthucthanhtoan.js";
+import tinhTrangThue from "./tinhtrangthue.js";
 import vanChuyen from "./vanchuyen.js";
 
 const thueXe = sequelize.define(
@@ -20,6 +22,10 @@ const thueXe = sequelize.define(
         ngay_tra: {
             type: Sequelize.BIGINT(19),
             allowNull: false,
+        },
+
+        ngay_giao_xe:{
+            type: Sequelize.BIGINT(19),
         },
         ten_nguoi_nhan: {
             type: Sequelize.STRING(100),
@@ -47,15 +53,18 @@ const thueXe = sequelize.define(
             type: Sequelize.DECIMAL(10, 2),
             allowNull: false,
         },
-        tinh_trang_thue: {
+        ma_tinh_trang: {
             type: Sequelize.INTEGER,
-            allowNull: false,
+            references:{
+                model:tinhTrangThue,
+                key: "ma_tinh_trang",
+            }
         },
         da_giao_tien:{
             type: Sequelize.TINYINT(1),
             defaultValue: false,
         },
-        tien_the_chan: {
+        tong_the_chan: {
             type: Sequelize.DECIMAL(10, 2),
             allowNull: true
         },
@@ -73,7 +82,13 @@ const thueXe = sequelize.define(
                 key: "ma_phi",
             },
         },
-
+        ma_thanh_toan: {
+            type: Sequelize.STRING(10),
+            references: {
+                model: phuongThucThanhToan,
+                key: "ma_thanh_toan",
+            },
+        }
     }
 )
 //thue xe 1-n
@@ -81,4 +96,8 @@ khachHang.hasMany(thueXe, { foreignKey: 'google_id' });
 thueXe.belongsTo(khachHang, { foreignKey: 'google_id' });
 vanChuyen.hasMany(thueXe, { foreignKey: 'ma_phi', as: "thueXe" });
 thueXe.belongsTo(vanChuyen, { foreignKey: 'ma_phi', as: 'vanChuyen' });
+phuongThucThanhToan.hasMany(thueXe, {foreignKey:"ma_thanh_toan", as:"thueXe"})
+thueXe.belongsTo(phuongThucThanhToan, {foreignKey:"ma_thanh_toan", as:"ptThanhToan"});
+tinhTrangThue.hasMany(thueXe, {foreignKey:"ma_tinh_trang", as:"donThue"})
+thueXe.belongsTo(tinhTrangThue, {foreignKey:"ma_tinh_trang", as:"tinhTrang"});
 export default thueXe;
