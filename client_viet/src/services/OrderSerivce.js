@@ -1,4 +1,4 @@
-import webApi,{ adminApi } from "@/configs/axios";
+import webApi, { adminApi } from "@/configs/axios";
 
 export default class OrderService {
     static async getRecentOrders(page = 1, size = 7) {
@@ -17,6 +17,26 @@ export default class OrderService {
                 return response.data.data;
         } catch (error) {
             return {};
+        }
+    }
+    static async getOrders(status = null, expired = false, dateFrom, dateTo , search = null, order = "ASC", page = 0, size = 7) {
+        try {
+            let condition = {
+                page,
+                size,
+                order: order,
+                expired: expired,
+                date_from:dateFrom,
+                date_to:dateTo,
+            };
+            if (status) condition.status = status;
+            if (search) condition.search = search;
+            const response = await adminApi.get(`/don-hang/danh-sach-don-hang`, { params: condition });
+            if (response.data.status === 200)
+                return response.data.data;
+            return null;
+        } catch (error) {
+            return null;
         }
     }
     static async changeOrderStatus(order_id, status, the_chan = 0) {
