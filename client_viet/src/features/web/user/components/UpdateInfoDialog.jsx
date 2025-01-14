@@ -39,24 +39,41 @@ function UpdateInfoDialog({ openModal, toggleOpen }) {
   const addPhone = (e) => {
     setPhone(e.target.value);
   };
+  // check card function
+  const validateInfoCard = (cmnd, gplx) => {
+    if (!cmnd || !gplx) {
+      Alert.showToast(
+        "Vui lòng nhập đầy đủ",
+        "info",
+        1500,
+        document.querySelector(".MuiDialog-root")
+      );
+      return false;
+    }
+    if (cmnd.name != gplx.name) {
+      Alert.showToast(
+        "Giấy phép của bạn không trùng khớp. Thử lại!",
+        "info",
+        1500,
+        document.querySelector(".MuiDialog-root")
+      );
+      return false;
+    }
+    return true;
+  };
   const handleCheck = async () => {
-    const validateInfoCard = (cmnd, gplx) => {
-      if (!cmnd || !gplx) {
-        Alert.showError("Vui lòng nhập đầy đủ");
-        return false;
-      }
-      if (cmnd.name != gplx.name) {
-        Alert.showError("Giấy phép của bạn không trùng khớp. Thử lại!");
-        return false;
-      }
-      return true;
-    };
     // nếu không có gì xảy ra
     if (!userCard && phone == "") {
-      Alert.showError("Vui lòng nhập ít nhất là số điện thoại");
+      Alert.showToast(
+        "Vui lòng nhập ít nhất là số điện thoại",
+        "info",
+        1500,
+        document.querySelector(".MuiDialog-root")
+      );
       return;
     }
-    if (userCard && !userInfo) {
+    // Nếu chưa có CMND/GPLX hoặc đã kiểm nhưng bị lỗi thì kiểm lại
+    if (userCard && (!userInfo?.GPLX || !userInfo?.CMND)) {
       // Kiểm tra CMND và GPLT
       await checkPersonalID();
       await checkDrivingLicense();
@@ -85,7 +102,12 @@ function UpdateInfoDialog({ openModal, toggleOpen }) {
           ) {
             return true;
           } else {
-            Alert.showError("Thông tin giấy phép không trùng khớp. Thử lại!");
+            Alert.showToast(
+              "Thông tin giấy phép không trùng khớp. Thử lại!",
+              "info",
+              1500,
+              document.querySelector(".MuiDialog-root")
+            );
             return false;
           }
         }
@@ -105,7 +127,6 @@ function UpdateInfoDialog({ openModal, toggleOpen }) {
       setUpdateResult(true);
       setTimeout(() => window.location.reload(), 1500);
     } else {
-      // Alert.showAlertDialog("Lỗi cập nhật", "Vui lòng thử lại !", "error");
       setUpdateResult(false);
     }
   };
@@ -113,14 +134,19 @@ function UpdateInfoDialog({ openModal, toggleOpen }) {
     // idr = id recognition
     if (!userCard || !userCard.CMND) return;
     const idr = await VerifyCardService.getCMNDData(userCard?.CMND);
+    console.log(idr);
     if (idr == null || idr == -1) {
-      Alert.showToast("Không thể đọc CCCD", "error");
+      Alert.showToast(
+        "Không thể đọc CCCD",
+        "error",
+        1500,
+        document.querySelector(".MuiDialog-root")
+      );
     } else {
       const CMND = {
         id: idr.id,
         name: idr.name,
       };
-      console.log(CMND);
       setUserInfo((prev) => ({ ...prev, CMND: CMND }));
     }
   };
@@ -128,15 +154,20 @@ function UpdateInfoDialog({ openModal, toggleOpen }) {
     if (!userCard || !userCard.GPLX) return;
     // dlr = driving license recognition
     const dlr = await VerifyCardService.getGPLXData(userCard?.GPLX);
+    console.log(dlr);
     if (dlr == null || dlr == -1) {
-      Alert.showToast("Không thể đọc GPLX", "error");
+      Alert.showToast(
+        "Không thể đọc GPLX",
+        "error",
+        1500,
+        document.querySelector(".MuiDialog-root")
+      );
     } else {
       const GPLX = {
         id: dlr.id,
         name: dlr.name,
         class: dlr.class,
       };
-      console.log(GPLX);
       setUserInfo((prev) => ({ ...prev, GPLX: GPLX }));
     }
   };
@@ -187,7 +218,7 @@ function UpdateInfoDialog({ openModal, toggleOpen }) {
           <DialogActions>
             <Button onClick={toggleOpen}>Hủy</Button>
             <Button onClick={handleUpdate} type="submit">
-              {userCard && !userInfo ? "Kiểm tra" : "Cập nhật"}
+              {userCard && (!userInfo?.CMND || !userInfo?.GPLX) ? "Kiểm tra" : "Cập nhật"}
             </Button>
           </DialogActions>
         </Dialog>
