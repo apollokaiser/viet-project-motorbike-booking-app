@@ -7,7 +7,7 @@ export default class Utils {
             .replace(/Đ/g, "D")
             .replace(" ", "_")
     }
-    static sortObjects(array, property = "ma_xe", search = null, ascending = true) {
+    static sortObjects(array, property, search = null, ascending = true) {
         if (!array || array.length === 0) return [];
         // Lọc nếu search có giá trị hợp lệ
         if (search?.trim()) {
