@@ -1,6 +1,6 @@
 import BoxGroup from "@/features/admin/home/components/box/BoxGroup";
-import ExpiredOrders from "./components/datatable/ExpiredOrders";
-import RecentOrders from "./components/datatable/RecentOrders";
+import ExpiredOrders from "./components/ExpiredOrders";
+import RecentOrders from "./components/RecentOrders";
 
 function Home() {
   return (
