@@ -7,18 +7,30 @@ import tinhTrangThue from "../models/tinhtrangthue.js";
 import ctGiaoXe from "../models/chitietgiaoxe.js";
 export default class ThueXeSerivce {
     static async getOrders(req, res) {
-        const { page = 1, size = 10, expired } = req.query;
+        let { page = 1, size = 10, expired, status, order = "ASC", date_from, date_to } = req.query;
         try {
-            const condition = {
-                ma_tinh_trang: [1, 2, 3] // Gán mặc định status = 1 nếu không truyền
-            };
-
-            if (expired) {
-                condition.ngay_tra = { [Op.gte]: Math.floor(Date.now() / 1000) }; // Fix timestamp
+            order = order.toUpperCase();
+            if (!status || status == "all") {
+                status = [1, 2, 3, 4, 5]; // nếu status = all hoặc không có setting thì coi như lấy tất cả
+            } else {
+                status = status.split("-"); // query URL nhận được sẽ có dạng có dạng:  ?status=1-2-3&order=.............
+            }
+            const condition = { ma_tinh_trang: status };
+            if (expired) { // nếu muốn lấy đơn hết hạn, bỏ qua mã tình trạng, chỉ xét theo thời gian
+                delete condition.ma_tinh_trang;
+                condition.ngay_tra = { [Op.gte]: Math.floor(new Date().getTime() / 1000 + 24 * 60 * 60) };
+            }
+            //may be use [Op.between]
+            if (date_from) {
+                condition.ngay_dat = { [Op.gte]: new Date(date_from).getTime() / 1000 };
+            }
+            if (date_to) {
+                condition.ngay_dat = { ...condition.ngay_dat, [Op.lte]: new Date(date_to).getTime() / 1000 }
             }
             const result = await thueXe.findAll({
                 limit: Number.parseInt(size),
                 offset: (Number.parseInt(page) - 1) * Number.parseInt(size),
+                order: [["ma_tinh_trang", order], ["createdAt", order]],
                 where: condition,
                 include: [
                     {
@@ -35,6 +47,7 @@ export default class ThueXeSerivce {
             return res.status(200).send(new ResponseMessage("Error", 500));
         }
     }
+
     static async getPaymentMethods(req, res) {
         try {
             const paymentMethods = await phuongThucThanhToan.findAll();
