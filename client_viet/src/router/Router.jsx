@@ -31,6 +31,7 @@ import OrderHistory from "@/features/web/user/OrderHistory.jsx";
 import OrderHistoryContent from "@/features/web/user/components/OrderHistoryContent.jsx";
 import OrderInfomation from "@/features/web/user/OrderInfomation.jsx";
 import ProductListPage from "@/features/web/vehicle/ProductListPage.jsx";
+import OrderListPage from "@/features/admin/order/OrderListPage.jsx";
 
 const router = createBrowserRouter([
   {
@@ -146,6 +147,9 @@ const router = createBrowserRouter([
       {
         path:"bao-cao",
         element: <ReportPage />,
+      },{
+        path:"danh-sach-don-thue-xe",
+        element: <OrderListPage />
       }
     ],
   },

@@ -20,7 +20,11 @@ function OrderDetail({ id, handle }) {
     });
   }, [id]);
   const updateOrderToDelivered = async () => {
-    const response = await OrderService.changeOrderStatus(id, 3, order.tong_the_chan); // 3 là trạng thái đã giao
+    const response = await OrderService.changeOrderStatus(
+      id,
+      3,
+      order.tong_the_chan
+    ); // 3 là trạng thái đã giao
     if (response) {
       Alert.showToast(
         "Đã giao hàng xe thành công.",
@@ -30,7 +34,7 @@ function OrderDetail({ id, handle }) {
       );
       setOrder((prevOrder) => {
         prevOrder.tinhTrang.ma_tinh_trang = 3;
-        prevOrder.ngay_giao_xe =Utils.formatDate(new Date().getTime()/1000); 
+        prevOrder.ngay_giao_xe = Utils.formatDate(new Date().getTime() / 1000);
         return { ...prevOrder };
       });
       handle(true);
@@ -133,9 +137,17 @@ function OrderDetail({ id, handle }) {
                     </tr>
                   </tbody>
                 </table>
-                {order && order.tinhTrang?.ma_tinh_trang < 3 && (
+                {order && order.tinhTrang.ma_tinh_trang < 2 && (
+                  <em style={{ color: "red", fontStyle: "italic" }}>
+                    Vui lòng thực hiện xác nhận để tiếp tục
+                  </em>
+                )}
+                {order && order.tinhTrang?.ma_tinh_trang == 2 && (
                   <div className="order-action">
-                    <DeliveriedConfimDialog handle={updateOrderToDelivered} theChan={order?.tong_the_chan}/>
+                    <DeliveriedConfimDialog
+                      handle={updateOrderToDelivered}
+                      theChan={order?.tong_the_chan}
+                    />
                   </div>
                 )}
                 {order && order.tinhTrang?.ma_tinh_trang == 3 && (

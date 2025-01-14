@@ -21,10 +21,9 @@ function SideMenu() {
           </li>
           <li>
             <Link to={"/admin/bao-cao"}><img src={report} alt="" /><span>Báo cáo</span></Link>
-            
           </li>
           <li>
-            <img src={payment} alt="" /><span>Quản lý đơn</span>
+            <Link to={"/admin/danh-sach-don-thue-xe"}><img src={payment} alt="" /><span>Quản lý đơn</span></Link>
           </li>
           <li>
             <img src={setting} alt="" /><span>Settings</span>
