@@ -9,8 +9,8 @@ import moment from "moment";
 import ctThueXe from "../models/chitietthuexe.js";
 import { sequelize } from "../models/index.js";
 import thueXe from "../models/thuexe.js";
-import bienSoXe from "../models/biensoxe.js";
 import Xe from "../models/xe.js";
+import MailService from "./mail.service.js";
 
 
 
@@ -142,7 +142,7 @@ const createNewOrder = (req, pending = false) => {
         ma_tinh_trang: !pending ? 1 : 0,
         da_giao_tien: false,
         tong_tien: orderDetails.total,
-        phi_giao_xe: orderDetails.transport_fee,
+        phi_giao_xe: orderDetails.transport_fee || 0,
         tong_thue: orderDetails.tong_thue,
         google_id: req.user.google_id,
         ma_phi: orderDetails.ma_phi,
@@ -180,6 +180,10 @@ const addOrder = async (req, pending = false) => {
         // update vehicle quantity
         await updateQuantity(orderDetails.items);
         await transaction.commit();
+        MailService.sendMail(req.user.email, "Thông tin đơn thuê xe của bạn", "OrderInfomation", {
+            order: donThueXe,
+            details: orderDetailDatas
+        })
         return donThueXe;
     } catch (error) {
         console.log(error);

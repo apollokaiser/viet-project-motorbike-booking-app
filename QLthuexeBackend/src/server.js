@@ -1,17 +1,17 @@
 import express from "express";
-import configViewEngine from "./config/viewEngine.js";
 import routes from "./routers/web.js";
 import { sequelize } from "./models/index.js";
 import * as initialize from "./utils/initialize.js";
 import corsConfig from "./config/cors.conf.js";
+import ScheduleService from "./service/schedule.service.js";
 const app = express();
 
 
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
-configViewEngine(app);
 corsConfig(app);
 routes(app);
+ScheduleService.sendExpiredOrderNotifacationEmailTask.start();
 
 // //sequelize
 sequelize.sync({ alter: true })
