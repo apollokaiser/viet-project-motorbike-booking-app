@@ -32,6 +32,8 @@ import OrderHistoryContent from "@/features/web/user/components/OrderHistoryCont
 import OrderInfomation from "@/features/web/user/OrderInfomation.jsx";
 import ProductListPage from "@/features/web/vehicle/ProductListPage.jsx";
 import OrderListPage from "@/features/admin/order/OrderListPage.jsx";
+import SettingPage from "@/features/admin/settings/SettingPage.jsx";
+import DescriptionSetting from "@/features/admin/settings/DescriptionSetting.jsx";
 
 const router = createBrowserRouter([
   {
@@ -56,8 +58,8 @@ const router = createBrowserRouter([
         element: <SearchPage />,
       },
       {
-        path:"/danh-sach-xe",
-        element:<ProductListPage />
+        path: "/danh-sach-xe",
+        element: <ProductListPage />,
       },
       {
         path: "/gio-hang",
@@ -66,28 +68,28 @@ const router = createBrowserRouter([
       {
         path: "/khach-hang",
         element: <UserPage />,
-        children:[
+        children: [
           {
             path: "thong-tin",
             element: <UserInfo />,
-            index: true
+            index: true,
           },
           {
             path: "lich-su-thue-xe",
-            element:<OrderHistory />,
-            children:[
+            element: <OrderHistory />,
+            children: [
               {
-                path:"",
-                element:<OrderHistoryContent />,
-                index:true
+                path: "",
+                element: <OrderHistoryContent />,
+                index: true,
               },
               {
-                path:"chi-tiet",
-                element: <OrderInfomation />
-              }
-            ]
-          }
-        ]
+                path: "chi-tiet",
+                element: <OrderInfomation />,
+              },
+            ],
+          },
+        ],
       },
     ],
   },
@@ -118,6 +120,17 @@ const router = createBrowserRouter([
     },
   },
   {
+    path: "/settings",
+    element: <SettingPage />,
+    children: [
+      {
+        path: "",
+        element: <DescriptionSetting />,
+        index: true,
+      },
+    ],
+  },
+  {
     path: "/admin",
     element: <AdminPage />,
     children: [
@@ -126,7 +139,7 @@ const router = createBrowserRouter([
         element: <AdminHome />,
       },
       {
-        path:"xuat-hoa-don",
+        path: "xuat-hoa-don",
         element: <RentalCompletion />,
       },
       {
@@ -145,12 +158,13 @@ const router = createBrowserRouter([
         ],
       },
       {
-        path:"bao-cao",
+        path: "bao-cao",
         element: <ReportPage />,
-      },{
-        path:"danh-sach-don-thue-xe",
-        element: <OrderListPage />
-      }
+      },
+      {
+        path: "danh-sach-don-thue-xe",
+        element: <OrderListPage />,
+      },
     ],
   },
   {

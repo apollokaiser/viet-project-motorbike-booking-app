@@ -4,7 +4,25 @@ import VideoBanner from "@comps/static/VideoBanner";
 import WhyChoose from "@comps/static/WhyChoose";
 import CategoryContent from "./components/CategoryContent";
 import ProductContent from "./components/ProductContent";
+import { useEffect } from "react";
+import SettingService from "@/services/SettingService";
 function Home() {
+  useEffect(() => {
+    Promise.all([
+      SettingService.getAttribute("web_title"),
+      SettingService.getAttribute("web_icon"),
+      SettingService.getAttribute("tag_line"),
+    ]).then(([title, icon, tag_line]) => {
+      if (title) {
+        if (tag_line) {
+          document.title = `${title} - ${tag_line}`;
+        } else {
+          document.title = title;
+        }
+      }
+      if (icon) document.querySelector("link['rel']").href = icon;
+    });
+  }, []);
   //template
   return (
     <>

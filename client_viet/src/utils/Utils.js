@@ -85,4 +85,10 @@ export default class Utils {
     static differenceHourDate(start, end) {
         return (end - start) / (24 * 60 * 60);
     }
+    static renameFile(originalFile, newName) {
+        return new File([originalFile], newName, {
+            type: originalFile.type,
+            lastModified: originalFile.lastModified,
+        })
+    }
 }
